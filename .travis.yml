@@ -5,7 +5,8 @@ install:
 - "./bin/setup"
 script:
 - bundle exec jekyll build --trace
-- bundle exec htmlproofer ./_site --only-4xx --allow-hash-href --assume-extension --url-ignore "feed.xml"
+- bundle exec htmlproofer ./_site --only-4xx --allow-hash-href --assume-extension
+  --url-ignore "feed.xml"
 after_success:
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && "./bin/deploy"
 env:
@@ -13,4 +14,4 @@ env:
   - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
   - USERNAME: xxxnell
   - EMAIL: xxxxxnell@gmail.com
-  - secure: lF2SrXXsmjf9MaLycX6dyOYuLUHEsPrVcUc/rhYNJePPRa6MoZGrZtIfZoY5H+ULHS1ccmi9Lx7iYrAluMG2IXks7dotnJwZGegkNZdpT4pdVbOgHPQCYiyKyEpLQwc+Y7S5SzSAc3pDhJxfD8LSInoQT5Vzotz3wjd1cDkFee+1/Vmaq7BkvhqivG8ubb7MdJ7JMgksr15JrDjIpNAP3ZT7W+iVXbv9mfI3SzAqT7rgUTQf6WxJQwT4MoPbBZbp+mCOxU14ffqwR9iCpxQ3a4izteoWJl4fuVZJQ0mEJO7uf6Gy9vIjUWMKGkJI1Q6rBCoeAffGWDMERhaufTcY9RdkH23wAGtRNfF6cMEhXKe5unzUCsQHW/KJlr0dshxyCMWSeW4HaZRSjeLQ4moZeC8sPAyRuZHPmODAuTSJom8oWWdzm0/smTiAqo7GzlwW+qBrw3CIGvT1wdJtfgJflEzcmE6vsBn6iyAGYGtN2QMcSu1/J2TvOuvI5V7Nu1sxDn4K4qROvry5z1Cng73V6WalePuIW5C6loMEQT9Mbg0ig/pYU9dyrLoo7JLB4ZY3UJEeDib3A4+akE4wt++qohomH8+okwSPT9g/xKJ/uDDFj4+fF53y0C5rEKS8BOSkU2J50SKDhnIIneQeWKf9gx1U0lY7SPtYdDq+AWZWMsg=
+  - secure: Vb8tWQq/Tw2xy9IVIYEbQmoU4CJ0oynoyOEQhqgE4qWPf8KGyMWCnr3rfQME5CiAjpQrC6aCUU9aFp6gD2s/JIbsbK+sacTEWcA1up9dNhLmDCcQMZTvYm3amwNWFeaV9qnx1ozDU55T9M8mQiMZ6NwqPRoDZ86x9iSOX34v4GqsldFpr10MZBTcouZuMCg0Gk/liQ9UHDurY3eFKrSNWD5toQIeMkTrUjLkedDl/15NaGrIQnNzkRWpzYM9doV49KYzshJUN+TIADyELp8tizdah38uEdgnHiKP6x1qMSJvmrJg97GxPWwO+Exf0KcmDKTzRqJKT+7AQlaOnLqlIt6qYuz5CkMedUderIPf/HpSrL5ZQJlP0mbXZLibiG51UoWDSoBI24XTULyBw2/oery5BSgPJD46+GnQxKU65N9O/uDqtZCXnJBCOP8mtZ5AiJik9UO672BuLKx+koam7dOuh2WF5yONof9lbhnXVigZwOFRb4SA0jKLd8BCoOkzqpfk76glYyXDjBGJWR4NBCAOee3PzOhHxbcRBNGQD7CZqEuC6jLXMzPF+fpNdTEpCTOEoE7cTfIA4jxYFjSAizh55GRaHap0BFfqWdu9xJGm3qI28Chygm3WWiUOrbw+yM6CE3pC4DDeRJUsRbLWf2IVqrcryuSuw5JduPIzli0=
