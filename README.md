@@ -1,3 +1,11 @@
+# Nell's Blog ✍️
+
+[![Build Status](https://travis-ci.org/xxxnell/blog.svg?branch=master)](https://travis-ci.org/xxxnell/blog)
+
+Below the divider is the original `README` of the Chalk I'm using as Jekyll Theme.
+
+---
+
 ![](_assets/images/documentation/chalk-intro@2x.png)
 
 Chalk is a high quality, completely customizable, performant and 100% free blog template for Jekyll.
