@@ -1,0 +1,16 @@
+language: ruby
+rvm:
+- 2.4.4
+install:
+- "./bin/setup"
+script:
+- bundle exec jekyll build --trace
+- bundle exec htmlproofer ./_site --only-4xx --allow-hash-href --assume-extension --check-opengraph --url-ignore "feed.xml"
+after_success:
+- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && "./bin/deploy"
+env:
+  global:
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+  - USERNAME: xxxnell
+  - EMAIL: xxxxxnell@gmail.com
+  - secure: lF2SrXXsmjf9MaLycX6dyOYuLUHEsPrVcUc/rhYNJePPRa6MoZGrZtIfZoY5H+ULHS1ccmi9Lx7iYrAluMG2IXks7dotnJwZGegkNZdpT4pdVbOgHPQCYiyKyEpLQwc+Y7S5SzSAc3pDhJxfD8LSInoQT5Vzotz3wjd1cDkFee+1/Vmaq7BkvhqivG8ubb7MdJ7JMgksr15JrDjIpNAP3ZT7W+iVXbv9mfI3SzAqT7rgUTQf6WxJQwT4MoPbBZbp+mCOxU14ffqwR9iCpxQ3a4izteoWJl4fuVZJQ0mEJO7uf6Gy9vIjUWMKGkJI1Q6rBCoeAffGWDMERhaufTcY9RdkH23wAGtRNfF6cMEhXKe5unzUCsQHW/KJlr0dshxyCMWSeW4HaZRSjeLQ4moZeC8sPAyRuZHPmODAuTSJom8oWWdzm0/smTiAqo7GzlwW+qBrw3CIGvT1wdJtfgJflEzcmE6vsBn6iyAGYGtN2QMcSu1/J2TvOuvI5V7Nu1sxDn4K4qROvry5z1Cng73V6WalePuIW5C6loMEQT9Mbg0ig/pYU9dyrLoo7JLB4ZY3UJEeDib3A4+akE4wt++qohomH8+okwSPT9g/xKJ/uDDFj4+fF53y0C5rEKS8BOSkU2J50SKDhnIIneQeWKf9gx1U0lY7SPtYdDq+AWZWMsg=
