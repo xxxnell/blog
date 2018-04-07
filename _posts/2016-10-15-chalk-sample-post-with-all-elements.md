@@ -10,7 +10,7 @@ Chalk uses the default Jekyll syntax highlighting gem Rouge. It has a customized
 Use the `highlight` tag to use the following code highlighting your preferred language:
 
 {% highlight html %}
-<!-- This is a comment -->
+<!-- This is a comment with highlight tag -->
 <div class="grid">
   <h1>This is a heading</h1>
   <p>
@@ -18,6 +18,18 @@ Use the `highlight` tag to use the following code highlighting your preferred la
   </p>
 </div>
 {% endhighlight %}
+
+``` html
+<!-- This is a comment with ``` -->
+<div class="grid">
+  <h1>This is a heading</h1>
+  <p>
+    This is a paragraph text.
+  </p>
+</div>
+```
+
+And inline syntax highlighting `<div class="grid">a</div>`.
 
 ## Headings
 

@@ -7,11 +7,21 @@
   padding-top: 35px;
   margin-bottom: 85px;
   border-top: 1px solid $base-border-color;
-  p {
-    font-size: 15px;
-    color: $gray-light;
-  }
+  font-size: 15px;
+  color: $gray-light;
   a {
     text-decoration: none;
+  }
+}
+
+.lang-sels {
+  .lang-sel {
+    display: inline-block;
+    padding-right: 5px;
+    padding-left: 5px;
+    cursor: pointer;
+  }
+  .lang-div {
+    display: inline-block;
   }
 }
