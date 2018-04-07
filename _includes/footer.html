@@ -8,7 +8,9 @@
   <div class="lang-sels">
     {% for tongue in site.languages %}
       {% capture link %}{% if tongue == site.default_lang %}{{ site.baseurl }}{{ page.url }}{% else %}{{ site.baseurl }}/{{ tongue }}{{ page.url }}{% endif %}{% endcapture %}
-      <div class="lang-sel" onclick="location.href='{{link}}';" {% if tongue == site.active_lang %}style="font-weight: bold;"{% endif %}>{{ tongue }}</div>
+      <!-- <div class="lang-sel" onclick="location.href='{{link}}';" {% if tongue == site.active_lang %}style="font-weight: bold;"{% endif %}>{{ tongue }}</div> -->
+      <a class="lang-sel" href=" {{link}}"  {% if tongue == site.active_lang %}style="font-weight: bold;"{% endif %}>{{ tongue }}</a>
+      <a class="lang-sel" href=" {{link}} "  {% if tongue == site.active_lang %}style="font-weight: bold;"{% endif %}>{{ tongue }}</a>
       <div class="lang-div">|</div>
     {% endfor %}
   </div>
