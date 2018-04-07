@@ -1,5 +1,16 @@
 <footer class="footer {% if site.scrollappear_enabled %}scrollappear{% endif %}">
+  <!--
   <p>
     About <a href="{{ 'about' | relative_url }}" title="About me">Nell</a>.
   </p>
+  -->
+
+  <div class="lang-sels">
+    {% for tongue in site.languages %}
+      {% capture link %}{% if tongue == site.default_lang %}{{ site.baseurl }}{{ page.url }}{% else %}{{ site.baseurl }}/{{ tongue }}{{ page.url }}{% endif %}{% endcapture %}
+      <div class="lang-sel" onclick="location.href='{{link}}';" {% if tongue == site.active_lang %}style="font-weight: bold;"{% endif %}>{{ tongue }}</div>
+      <div class="lang-div">|</div>
+    {% endfor %}
+  </div>
+
 </footer>
