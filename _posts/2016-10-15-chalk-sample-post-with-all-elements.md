@@ -112,3 +112,18 @@ Videos can be added and are responsive by default (4x3 by default, 16x9 with ext
   <iframe src="url-to-video" allowfullscreen></iframe>
 </div>
 {% endhighlight %}
+
+## Math formula
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>
+
+`\begin{equation}` style works:
+
+\begin{equation}
+  h_{B}(b) = \int_B f_{A}(a) g_{B}(b | A = a) da
+\end{equation}
+
+`$$` style also works:
+
+$$ h_{B}(b) = \int_B f_{A}(a) g_{B}(b | A = a) da $$
