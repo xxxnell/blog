@@ -297,7 +297,7 @@ object Data extends Ops {
 
 잘 짜여진 함수형 프로그램이 무엇일까요? 저는 이 형식의 관점에서, 프로그램이 요구하는 모든 연산의 기본 연산을 가능한 적은 갯수로 간결하게 정의하는 것이라고 보고 싶습니다.
 
-이 포스팅에서 서술한 FizzBuzz 테스트의 전체 코드는 [gist](https://gist.github.com/xxxnell/34ec92b5ab216ca6d8d95d0ca81970a3!)에서 조회하실 수 있습니다. 또, [Scastie](https://scastie.scala-lang.org/Qf8WlNGwT7aAJm2ObEnEBw)을 이용해 코드를 실행하거나 여러 가지로 변경해보실 수도 있습니다.
+이 포스팅에서 서술한 FizzBuzz 테스트의 전체 코드는 [gist](https://gist.github.com/xxxnell/34ec92b5ab216ca6d8d95d0ca81970a3)에서 조회하실 수 있습니다. 또, [Scastie](https://scastie.scala-lang.org/Qf8WlNGwT7aAJm2ObEnEBw)을 이용해 코드를 실행하거나 여러 가지로 변경해보실 수도 있습니다.
 
 이 글을 재미있게 읽으셨다면, 이 포스팅에서 소개된 형식으로 작성된 통계 라이브러리인 [Flip](https://github.com/xxxnell/flip)을 방문해 별을 눌러주세요!
 
