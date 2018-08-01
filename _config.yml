@@ -51,6 +51,7 @@ assets:
   plugins:
     css: { autoprefixer: {}}
     img: { optim: {}}
+  source_maps: false
   sources:
     - _assets/icons
     - _assets/javascripts
@@ -74,6 +75,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - package.json
+  - package-lock.json
   - README.md
   - vendor/
   - yarn.lock
