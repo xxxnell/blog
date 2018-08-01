@@ -245,7 +245,7 @@ val tf1: Int => String = i => "Fizz"
 val tf2: Int => String = i => "Buzz"
 val tf3: Int => String = i => "FizzBuzz"
 
-val inputs = (1 to 100).toList.map(no => Msg(no))
+val inputs = (1 to 100).toList.map(raw => Msg(raw))
 val outputs = inputs
   .map(i =>
     i.filter(cd3).map(tf3) orElse
