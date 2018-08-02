@@ -2,6 +2,7 @@
 layout: post
 title: "스칼라 클래스의 일반적인 형식화"
 description: "모든 스칼라 클래스를 작성할 때 가장 우선적으로 갖춰야 할 일반적인 형식을 제안합니다. 이 형식은 스칼라 클래스를 가독성 높고 쉽게 확장 가능하도록 합니다."
+issue: 8
 tags: [scala]
 lang: ko
 ---
@@ -46,16 +47,21 @@ val output = input.map {
 
 FizzBuzz 테스트를 메시지(문자메시지라고 생각해도 좋고, 네트워크 메시지라고 생각해도 좋습니다)를 다루는 문제로 생각합시다. 그러면, FizzBuzz 테스트는 모든 미가공된 데이터(raw data)에 대해 다음과 같은 연산 과정을 수행하는 것으로 바라볼 수 있습니다.
 
-1. 미가공된 데이터(여기서는 숫자)를 숫자를 포함하는 메시지로 변환
-2. 숫자를 포함하는 메시지에 대해 다음을 수행
-	<ul style="margin-bottom:0">
-	<li> 만약 메시지의 숫자가 3과 5의 배수라면, "FizzBuzz"를 포함한 메시지로 변환
-	<li> 위의 조건에 해당되지 않으면서, 만약 메시지의 숫자가 3의 배수라면, "Fizz"를 포함한 메시지로 변환
-	<li> 위의 조건에 해당되지 않으면서, 만약 메시지의 숫자가 5의 배수라면, "Buzz"를 포함한 메시지로 변환 
-	<li> 위의 어떤 조건에도 해당되지 않으면, 메시지를 그대로 유지
-3. 메시지를 문자열로 변환
+<ol>
+  <li> 미가공된 데이터(여기서는 숫자)를 숫자를 포함하는 메시지로 변환 </li>
+  <li> 숫자를 포함하는 메시지에 대해 다음을 수행 </li>
+  <li style="list-style-type:none">
+  <ul style="margin-bottom:0">
+    <li> 만약 메시지의 숫자가 3과 5의 배수라면, "FizzBuzz"를 포함한 메시지로 변환 </li>
+    <li> 위의 조건에 해당되지 않으면서, 만약 메시지의 숫자가 3의 배수라면, "Fizz"를 포함한 메시지로 변환 </li>
+    <li> 위의 조건에 해당되지 않으면서, 만약 메시지의 숫자가 5의 배수라면, "Buzz"를 포함한 메시지로 변환 </li>
+    <li> 위의 어떤 조건에도 해당되지 않으면, 메시지를 그대로 유지 </li>
+  </ul>
+  </li>
+  <li> 메시지를 문자열로 변환 </li>
+</ol>
 
-정리하면, 우리는 숫자와 문자열을 포함하는 메시지 클래스(`Msg`라고 부릅시다)를 구현해야 하고, 이 메시지 클래스에 대해 다음의 다섯 가지 기능을 구현해야 합니다. 
+정리하면, 우리는 숫자와 문자열을 포함하는 메시지 클래스(`Msg`라고 부릅시다)를 구현해야 하고, 이 메시지 클래스에 대해 다음의 다섯 가지 기능을 구현해야 합니다.
 
 * 미가공 데이터를 메시지로 변환하는 기능
 * 미가공 데이터의 조건을 검증하는 기능
@@ -82,7 +88,7 @@ trait Msg[+A]
 trait EmptyMsg extends Msg[Nothing]
 ```
 
-이제 `EmptyMsg`는 모든 타입 `A`에 대한 `Msg[A]`의 하위 타입입니다. 
+이제 `EmptyMsg`는 모든 타입 `A`에 대한 `Msg[A]`의 하위 타입입니다.
 
 다음으로, `Msg[A]`와 `EmptyMsg`를 생성할 수 있는 방법도 정의되어야 할 것입니다. 이를 다음과 같이 `object`를 이용해 정의합니다.
 
@@ -96,7 +102,7 @@ object Msg {
   def apply[A](a: A): Msg[A] = MsgImpl(a)
 
   def empty: EmptyMsg = EmptyMsgImpl
-  
+
 }
 ```
 
@@ -109,9 +115,9 @@ object Msg {
 주의할 것은 `Msg`를 어떻게 다루는지를 `trait Msg`에 정의하지 않는다는 것입니다. 여기서 소개하는 형식은 `Msg`를 어떻게 보관할지와 어떻게 다룰지를 분리합니다.
 
 
-## 기본 연산과 파생된 성질들 
+## 기본 연산과 파생된 성질들
 
-앞서 `Msg` 클래스를 통해 FizzBuzz 테스트에서 다루는 미가공 데이터를 어떻게 보관할 지 정했으니, 이제 `Msg` 클래스를 어떻게 다룰지 선언하겠습니다. `Msg` 클래스가 자료 구조에 대응됐다면, 이 선언은 자료 구조를 다루는 *알고리즘*에 대응됩니다. 
+앞서 `Msg` 클래스를 통해 FizzBuzz 테스트에서 다루는 미가공 데이터를 어떻게 보관할 지 정했으니, 이제 `Msg` 클래스를 어떻게 다룰지 선언하겠습니다. `Msg` 클래스가 자료 구조에 대응됐다면, 이 선언은 자료 구조를 다루는 *알고리즘*에 대응됩니다.
 
 [앞선 섹션](#fizzbuzz-테스트-자세히-들여다보기)에서 FizzBuzz 테스트를 위해 다음 다섯 가지 기능이 요구된다고 언급한 적 있습니다.
 
@@ -177,7 +183,7 @@ trait MsgLaws { self: MsgOps =>
 ``` scala
 object Msg extends MsgOps {
   ...
-  
+
   def point[A](a: A): Msg[A] = apply(a)
 
   def flatMap[A, B](msg: Msg[A], f: A => Msg[B]): Msg[B] =
@@ -191,14 +197,14 @@ object Msg extends MsgOps {
       case MsgImpl(a) => a.toString
       case _ => "empty"
     }
-  
+
 }
 ```
 
 `MsgOps`를 `object Msg`에서 구현한 이유는 두 가지입니다. 우선, `Msg`의 구현인 `MsgImpl`를 참조할 수 있는 범위가 `private`에 의해서 `object Msg`으로 제한돼있습니다. 따라서 `MsgOps`를 구현할 때 `MsgImpl`을 사용하려면 반드시 `object Msg`에서 구현해야 합니다. 두 번째로, `object Msg`에서 `MsgOps`를 구현하면, `MsgOps`의 연산을 사용할 때 `Msg`가 마치 네임스페이스나 패키지 이름처럼 보입니다. 즉, 연산을 `Msg.show(msg)`이나 `Msg.show(msg1, msg2)`처럼 호출할 수 있습니다.
 
 
-## 편의를 위해 추가된 문법 
+## 편의를 위해 추가된 문법
 
 앞서 `Msg`를 위한 연산 `MsgOps`를 `object Msg`에 구현함으로써 필요한 연산을 모두 호출할 수 있게 됐습니다. 하지만, 연산을 변수 앞에 적는 방식은 분명하지만 장황합니다. 따라서, 예를 들어 `Msg.show(Msg.orElse(Msg.filter(msg1, _ == 0), msg2))`같은 긴 연산을 짧게 적을 수 있는 방법이 필요합니다.
 
@@ -314,7 +320,7 @@ object Data extends Ops {
 
 * [A probability distrubiton class of Flip](https://github.com/xxxnell/flip/blob/master/flip-core/src/main/scala/flip/pdf/Dist.scala)
 
-simulacrum과 dandy는 이 포스팅에서 성취하고자 하는 목적과 비슷한 목적을 가진 라이브러리입니다. 
+simulacrum과 dandy는 이 포스팅에서 성취하고자 하는 목적과 비슷한 목적을 가진 라이브러리입니다.
 
 * [simulacrum](https://github.com/mpilquist/simulacrum)
 * [dandy](https://github.com/maxaf/dandy)
@@ -328,4 +334,3 @@ simulacrum과 dandy는 이 포스팅에서 성취하고자 하는 목적과 비�
 다음 포스팅은 위에서 서술한 여러 방법론이 공통적으로 겪는 문제를 보여줍니다. 이 포스팅에서 소개한 형식은 아래에서 제시한 문제를 피해갈 수 있습니다.
 
 * [Subtype type classes don't work](http://typelevel.org/blog/2016/09/30/subtype-typeclasses.html)
-
