@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Nell | Vector Quantized Bayesian Neural Network for Efficient Inference</title>
+  <meta name="description" content="We propose a novel method to significantly improve the inference speed of Bayesian neural networks by using previously memorized predictions.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Vector Quantized Bayesian Neural Network for Efficient Inference">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://blog.xxxnell.com/posts/vqbnn">
+  <meta property="og:description" content="We propose a novel method to significantly improve the inference speed of Bayesian neural networks by using previously memorized predictions.">
+  <meta property="og:site_name" content="Nell">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://blog.xxxnell.com/posts/vqbnn">
+  <meta name="twitter:title" content="Vector Quantized Bayesian Neural Network for Efficient Inference">
+  <meta name="twitter:description" content="We propose a novel method to significantly improve the inference speed of Bayesian neural networks by using previously memorized predictions.">
+
+  
+    <meta property="og:image" content="https://blog.xxxnell.com/assets/og-image-7e87963071a58c8692d81dcb7623af35cae39dd5b847f8e5c5655ffc333defeb.jpg">
+    <meta name="twitter:image" content="https://blog.xxxnell.com/assets/og-image-7e87963071a58c8692d81dcb7623af35cae39dd5b847f8e5c5655ffc333defeb.jpg">
+  
+
+  <link href="https://blog.xxxnell.com/feed.xml" type="application/rss+xml" rel="alternate" title="Nell Last 10 blog posts" />
+
+  
+
+  
+
+    
+      <link rel="icon" type="image/x-icon" href="/assets/favicon-light-a98c41efc5ed9fcc06ac664c9e2f7a9b3c3b2e0a52357d221fe382f6f4abc8fc.ico">
+      <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-87d1f2a3a19b1500e5c1626a0492025ca5f7f97d24540dc5900288e92112925a.png">
+      <link rel="stylesheet" type="text/css" href="/assets/light-bded5c6deb8bab3a79c4cd4d152b8637904863f012b575643ce274a559926ac5.css">
+    
+
+  
+
+  <!-- MathJax -->
+<!-- <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script> -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- utterances https://utteranc.es/ -->
+<script src="https://utteranc.es/client.js"
+        repo="xxxnell/blog"
+        issue-number="9"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90660277-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90660277-1');
+  </script>
+
+
+<script src="/assets/vendor-0fb4b91f7ad6c193a69224eba7a01b691a2d7528ee672607575ccc0df3aea545.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-5baeaec6ae90dfe28952c8193837fef2aee35ad61bcab5287466ddd6cc5b2c31.js" type="text/javascript"></script>
+
+
+
+
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="Nell">Nell</a>
+  <ul class="header-links">
+    
+    
+      <li>
+        <a href="https://twitter.com/xxxnell" rel="noreferrer noopener" target="_blank" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-twitter">
+  <use href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter" xlink:href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/xxxnell" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="mailto:xxxxxnell@gmail.com" title="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-email">
+  <use href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email" xlink:href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>Vector Quantized Bayesian Neural Network for Efficient Inference</h1>
+            <p>We propose a novel method to significantly improve the inference speed of Bayesian neural networks by using previously memorized predictions.</p>
+            <div class="article-list-footer">
+  <span class="article-list-date">
+    January 30, 2021
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      12 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/tag/nn" title="See all posts with tag 'Deep Learning'">Deep Learning</a>
+    
+      
+      <a href="/tag/bnn" title="See all posts with tag 'Bayesian Deep Learning'">Bayesian Deep Learning</a>
+    
+  </div>
+</div>
+          </header>
+
+          <div class="article-content">
+            <h2 id="tl-dr">TL; DR</h2>
+
+<ul>
+  <li>Bayesian neural network (BNN) is a promising method to overcome various problems with deep learning. However, BNN requires iterative neural network executions to predict a result for a single input data. Therefore, BNN inference is dozens of times slower than that of non-Bayesian neural network inference.</li>
+  <li>To tackle this problem, we propose a novel method called <em>Vector Quantized Bayesian Neural Network</em>. This method makes a prediction for an input data only once, and compensates the predictive result with previously memorized predictions.</li>
+</ul>
+
+<p>Translation: <a href="/ko/posts/vqbnn">Korean</a></p>
+
+<h2 id="bayesian-neural-network-estimates-uncertainty-and-provides-robustness-against-corrupted-data">Bayesian neural network estimates uncertainty and provides robustness against corrupted data</h2>
+
+<p>While deep learning show high accuracy in many areas, they have important problems, e.g.:</p>
+
+<ol>
+  <li><strong>Uncertainty estimation</strong>: Deep learning cannot estimate reliable probability. For example, in a classification task, we usually interpret <code class="highlighter-rouge">Softmax</code> value of a deep learning result as a probability. However, this value is quite different from the probability that the result is correct. In practice, a confidence of the <code class="highlighter-rouge">Softmax</code> probability, i.e., <code class="highlighter-rouge">Max(Softmax(nn_logit))</code>, is higher than the true confidence. In other words, deep learning tends to predict overconfident results.</li>
+  <li><strong>Rubustness against currupted data</strong>: Deep learning is vulnerable to adversarial attacks. In addition, the accuracy  is severely compromised by natural corruptions such as weather changes, motion blur, and defocus. Moreover, shifting the input image a few pixels cause inaccurate results.</li>
+</ol>
+
+<p>Predictions cannot be perfect and these demerits might bring about fatal consequences in some areas. For example, consider the case of autonomous driving. When an autonomous vehicle incorrectly recognize that there is nothing in front—and there are other vehicles—a collision may occur. If the autonomous driving system can predict the uncertainty, i.e. the probability that the prediction will be wrong, it will be safer and more reliable. In addition, autonomous driving systems must be safe even at night or in foggy conditions.</p>
+
+<p>Bayesian deep learning, or Bayesian neural network (BNN), is one of the most promising method that can predict not only accurate results but also uncertainties. To do so, BNN uses probability distribution to model neural network (NN) weights; as opposed to traditional deep learning or <em>deterministic</em> neural network .</p>
+
+<p>This allows computer systems to make better decisions by combining prediction with uncertainty. Also, BNN is robust to various data corruptions. In summary, BNN is an effective way to build a trustworthy AI system. In addition, BNN has various advantages such as improving prediction performance and achieving high performance in meta-learning.</p>
+
+<h2 id="however-bayesian-neural-network-inference-is-very-slow">However, Bayesian neural network inference is very slow</h2>
+
+<p>Despite these advantages, BNNs have a major disadvantage that makes it diffuclt to use as a practical tool; the predictive inference speed of BNNs is dozens of times slower than that of deterministic NNs, and the computational cost of BNNs increases dozens of times.</p>
+
+<p>In this post, we are aiming to produce a fix. To do so, we must first ask why. Why is BNN inference so slow?</p>
+
+<h3 id="brief-overview-of-bnn-inference">Brief overview of BNN inference</h3>
+
+<p><a href="/assets/documentation/vqbnn/diagrams/bnn-inference-7b72acaa2319e76304aa387e92ed91eb413bfbf0629b6d6b99451ebe8276d5e6.png">
+  <img src="/assets/documentation/vqbnn/diagrams/bnn-inference-7b72acaa2319e76304aa387e92ed91eb413bfbf0629b6d6b99451ebe8276d5e6.png" alt="bnn-inference" class="zooming" data-rjs="/assets/documentation/vqbnn/diagrams/bnn-inference-7b72acaa2319e76304aa387e92ed91eb413bfbf0629b6d6b99451ebe8276d5e6.png" data-zooming-width="" data-zooming-height="" />
+</a></p>
+
+<p>The process of BNN inference—shown in the figure above—is as follows:</p>
+
+<ol>
+  <li>Suppose that we have access to a trained NN weight probability distribution. Then, we sample NN weights from the probability and create a NN ensemble. In this figure, we create an ensemble of five NNs by using five NN weights for the toy classification task.</li>
+  <li>We use this ensemble to calculate multiple probability predictions for a single data. In this figure, we calculate five neural network logits and transform them to probabilies by using <code class="highlighter-rouge">Softmax</code>. If we use MC dropout as BNN, this process  corresponds to executing multiple NN inferences for a single data, by using a NN model with dropout layers. If we use deep ensemble, it corresponds to calculating predictions for one data by using independently trained NNs.</li>
+  <li>We average the probability predictions. In this figure, we sum the probability predictions with the same importances <script type="math/tex">\frac{1}{5}</script>.</li>
+</ol>
+
+<p>So, to summarize in one sentence, <em>BNN inference is Bayesian neural net ensemble average</em>. Since NN execution is computationally expensive, BNN inference is five times slower than deterministic NN inference in this example. In real-world applications, BNN such as MC dropout uses 30 predictions to achieve high predictive performance, which means that the inference speed of BNN is 30✕ slower compared to deterministic NN.</p>
+
+<h3 id="detailed-explanation-of-bnn-inference">Detailed explanation of BNN inference</h3>
+
+<p>Now, let’s move on to the details. The inference result of BNN is a posterior predictive distribution (PPD) for a single data point:</p>
+
+<script type="math/tex; mode=display">p(\textbf{y} \vert \textbf{x}_0, \mathcal{D}) = \int p(\textbf{y} \vert \textbf{x}_0, \textbf{w}) p(\textbf{w} \vert \mathcal{D}) d\textbf{w}</script>
+
+<p>where <script type="math/tex">\textbf{x}_0</script> is an observed input data, <script type="math/tex">p(\textbf{y} \vert \textbf{x}_0, \textbf{w})</script> is a probability distribution parameterized by NN’s result for an input data, and <script type="math/tex">p(\textbf{w} \vert \mathcal{D})</script> is a probability of trained NN weights with respect to training dataset <script type="math/tex">\mathcal{D}</script> — i.e. a posterior probability in Bayesian statistics.</p>
+
+<p>Unfortunately, this integral cannot be solved analytically in most cases. So, we need some approximation to calculate it. In general, we use the MC estimator as follows:</p>
+
+<script type="math/tex; mode=display">p(\textbf{y} \vert \textbf{x}_0, \mathcal{D}) \simeq \sum_{\color{purple}{\textbf{w}_i}} \color{blue}{\frac{1}{N_{\textbf{w}}}} \color{green}{p(\textbf{y} \vert \textbf{x}_0, \textbf{w})}</script>
+
+<p>In this equation, <span style="color:#006400;">green indicates a prediction</span> <script type="math/tex">\color{green}{p(\textbf{y} \vert \textbf{x}_0, \textbf{w})}</script>, <span style="color:#7D3C98;">purple indicates a NN weights</span> <script type="math/tex">\color{purple}{\textbf{w}_i}</script>, and <span style="color:#00008B;">blue indicates an importance</span>. Since we write the equations in the same color as the figure, we easily compare the equation and the figure.</p>
+
+<p>To approximate the predictive distribution, we use the following <script type="math/tex">N_{\textbf{w}}</script> iid samples from the NN weight distribution:</p>
+
+<script type="math/tex; mode=display">\left( \color{purple}{\textbf{w}_i}, \color{blue}{\frac{1}{N_{\textbf{w}}}} \right) \sim \color{green}{p(\textbf{w} \vert \mathcal{D})}</script>
+
+<p>This approximation says that BNN inference needs to executes NN inference <script type="math/tex">N_{\textbf{w}}</script> times. As a result, the inference speed is <script type="math/tex">N_{\textbf{w}}</script> times slower than deterministic NN.</p>
+
+<p>How can we solve this problem? How can we calculate the neural net ensemble average in an efficient way?</p>
+
+<h2 id="vector-quantization-bayesian-neural-network-improves-inference-speed-by-using-previously-memorized-predictions">Vector quantization Bayesian neural network improves inference speed by using previously memorized predictions</h2>
+
+<p>To tackle the problem that BNN inference is significantly slow, we propose a novel method called vector quantized Bayesian neural network (VQ-BNN). Here is the main idea: In VQ-BNN, we executes NN prediction only once, and compensate the result with previously memorized predictions.</p>
+
+<h3 id="brief-overview-of-vq-bnn-inference">Brief overview of VQ-BNN inference</h3>
+
+<p><a href="/assets/documentation/vqbnn/diagrams/vqbnn-inference-bddac8701dffd070e90b5d0bed117bff4f95ce4745c1bddd260869f4ff8524cd.png">
+  <img src="/assets/documentation/vqbnn/diagrams/vqbnn-inference-bddac8701dffd070e90b5d0bed117bff4f95ce4745c1bddd260869f4ff8524cd.png" alt="vqbnn-inference" class="zooming" data-rjs="/assets/documentation/vqbnn/diagrams/vqbnn-inference-bddac8701dffd070e90b5d0bed117bff4f95ce4745c1bddd260869f4ff8524cd.png" data-zooming-width="" data-zooming-height="" />
+</a></p>
+
+<p>The process of VQ-BNN inference shown in the figure above is as follows:</p>
+
+<ol>
+  <li>We obtain the NN weight distribution in the same way as BNN training. We sample a NN weight from the trained NN weight distribution. Then, we make a single prediction for the observed input data with the NN weight.</li>
+  <li>Suppose that we have access to previously memorized inputs and the corresponding predictions. We calculate importances for the memorized input data. The importance is defined as the similarity between the observed and memorized data.</li>
+  <li>We averages the newly calculated prediction for observed data and memorized predictions, with importances.</li>
+</ol>
+
+<p>In short, VQ-BNN inference is importance-weighted ensemble average of the newly calculated prediction and memorized predictions. That means, VQ-BNN compensates the result with memorized predictions for memorized inputs, also called quantized vectors or prototypes. If the time to calculate importances is negligible, it takes almost the same amoutn of time to executes VQ-BNN inference and to execute NN prediction once.</p>
+
+<h3 id="detailed-explanation-of-vq-bnn-inference">Detailed explanation of VQ-BNN inference</h3>
+
+<p>Let’s move on to the details. As an alternative to the predictive distribution of BNN for one data point <script type="math/tex">\textbf{x}_0</script>, we propose a novel predictive distribution for a set of data <script type="math/tex">\mathcal{S}</script>:</p>
+
+<script type="math/tex; mode=display">p(\textbf{y} \vert \mathcal{S}, \mathcal{D}) = \int p(\textbf{y} \vert \textbf{x}, \textbf{w}) \, p(\textbf{x} \vert \mathcal{S}) \, p(\textbf{w} \vert \mathcal{D}) \, d\textbf{x} d\textbf{w}</script>
+
+<p>To do so, we introduce a probability distribution of data <script type="math/tex">p(\textbf{x} \vert \mathcal{S})</script>. When the source is stationary, the probability represents the observation noise. For the case where the set of data <script type="math/tex">\mathcal{S}</script> is from a noiseless stationary source, i.e., <script type="math/tex">p(\textbf{x} \vert \mathcal{S}) = \delta(\textbf{x} - \textbf{x}_0)</script>, this predictive distribution is equal to the predictive distribution of BNN.</p>
+
+<p>We can rewrite it as follows:</p>
+
+<script type="math/tex; mode=display">p(\textbf{y} \vert \mathcal{S}, \mathcal{D})	= \int p(\textbf{y} \vert \textbf{x}, \textbf{w}) \, p(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) \, d\textbf{x}d\textbf{w}</script>
+
+<p>For simplicity, we introduce <script type="math/tex">p(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) = p(\textbf{x} \vert \mathcal{S}) \, p(\textbf{w} \vert \mathcal{D})</script>. Then, we easily observe the symmetry of <script type="math/tex">\textbf{x}</script> and <script type="math/tex">\textbf{w}</script>.</p>
+
+<p>This Equation also cannot be solved analytically, and we need an approximation as well. Here, we don’t use MC estimator which uses iid samples; instead, we approximate the equation by using importance sampling as follows:</p>
+
+<script type="math/tex; mode=display">p(\textbf{y} \vert \mathcal{S}, \mathcal{D}) \simeq \sum_{\color{purple}{\left( \textbf{x}_{i}, \textbf{w}_{i} \right)}} \color{blue}{\pi(\textbf{x}_{i}, \textbf{w}_i \vert \mathcal{S}, \mathcal{D})} \, \color{green}{p(\textbf{y} \vert \textbf{x}_{i}, \textbf{w}_{i})}</script>
+
+<p>Here we use the following quantized vector samples and importances:</p>
+
+<script type="math/tex; mode=display">\left( \color{purple}{(\textbf{x}_{i}, \textbf{w}_{i})}, \color{blue}{\pi(\textbf{x}_{i}, \textbf{w}_{i} \vert \mathcal{S}, \mathcal{D})} \right) \sim \color{green}{p(\textbf{x}_{i}, \textbf{w}_{i} \vert \mathcal{S}, \mathcal{D})}</script>
+
+<p>In this equation, <span style="color:#006400;">green indicates a prediction</span> <script type="math/tex">\color{green}{p(\textbf{y} \vert \textbf{x}_0, \textbf{w})}</script>, <span style="color:#7D3C98;">purple indicates a tuple of input data and NN weight sample</span> <script type="math/tex">\color{purple}{(\textbf{x}_i, \textbf{w}_i)}</script>, and <span style="color:#00008B;">blue indicates an importance</span> <script type="math/tex">\color{blue}{\pi(\textbf{x}_{i}, \textbf{w}_i \vert \mathcal{S}, \mathcal{D})}</script>. As above, it is easy to compare the equation and the figure above because the equation are written in the same color as the figure.</p>
+
+<p>Why do we use the samples with different importances, instead of iid samples? This is because we try to represent the probability of <script type="math/tex">\textbf{x}</script> and <script type="math/tex">\textbf{w}</script>, i.e., <script type="math/tex">p(\textbf{x}_{i}, \textbf{w}_{i} \vert \mathcal{S}, \mathcal{D})</script>, by changing the importance with the fixed data-weight samples. Following this perspective, we call the data-weight samples <em>prototypes</em> or <em>quantized vectors</em>.</p>
+
+<p>We can improve the inference speed by using VQ-BNN. Let’s divide the predictive distribution of VQ-BNN expressed as a summation by the first term and the remainder. Without loss of generality, let <script type="math/tex">\textbf{x}_0</script> be the observed data. Then, the first term of the equation <script type="math/tex">\pi(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) \, p(\textbf{y} \vert \textbf{x}_{0}, \textbf{w}_{0})</script> refers to the prediction of the NN for observed data, which is a newly calculated prediction. 
+And the remainder <script type="math/tex">\sum_{i = 1}^{N_{\textbf{w}}} \pi(\textbf{x}_{i}, \textbf{w}_{i} \vert \mathcal{S}, \mathcal{D}) \, p(\textbf{y} \vert \textbf{x}_{i}, \textbf{w}_{i})</script> refers to the memorized NN predictions for memorized inputs and weights. If the time to calculate importances are negligible, it takes almost the same time as performing NN prediction only once.</p>
+
+<p><strong>Simplifying importance to depend only on <script type="math/tex">\textbf{x}</script> (optional).</strong>
+The notation of the importance <script type="math/tex">\pi(\textbf{x}_{i}, \textbf{w}_{i} \vert \mathcal{S}, \mathcal{D})</script> indicates that it depends not only on the data <script type="math/tex">\textbf{x}</script> but also on the NN weight <script type="math/tex">\textbf{w}</script>. In fact, the importance does not depend on the NN weight, i.e., <script type="math/tex">\pi(\textbf{x}_{i}, \textbf{w}_{i} \vert \mathcal{S}, \mathcal{D}) = \pi(\textbf{x}_{i} \vert \mathcal{S})</script>. Therefore, we define importance using only the similarity between the data.</p>
+
+<p>The reason is as follows. Let <script type="math/tex">f(\textbf{x}, \textbf{w})</script> be a distribution of data and NN weight tuple sample <script type="math/tex">\{ (\textbf{x}_i, \textbf{w}_i) \}</script>, i.e., <script type="math/tex">(\textbf{x}_i, \textbf{w}_i) \sim f(\textbf{x}, \textbf{w})</script>. Then, we rewrite <script type="math/tex">p(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) = \frac{p( \textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D})}{f( \textbf{x}, \textbf{w})} f( \textbf{x}, \textbf{w})</script>. Since <script type="math/tex">p(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) = \pi( \textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) f( \textbf{x}, \textbf{w})</script>, we obtain <script type="math/tex">\pi( \textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) = \frac{p( \textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D})}{f(\textbf{x}, \textbf{w})}</script>.</p>
+
+<p>Suppose that <script type="math/tex">\{ \textbf{w}_i \}</script> is iid NN weight samples from the posterior <script type="math/tex">p( \textbf{w} \vert \mathcal{D})</script>, i.e., <script type="math/tex">\{ \textbf{w}_i \} \sim p( \textbf{w} \vert \mathcal{D})</script>. Then, we can decompose <script type="math/tex">f(\textbf{x}, \textbf{w})</script> into the posterior and a distribution <script type="math/tex">g(\textbf{x})</script> that depends only on <script type="math/tex">\textbf{x}</script>, i.e., <script type="math/tex">f(\textbf{x},\textbf{w}) = g(\textbf{x}) \, p(\textbf{w} \vert \mathcal{D})</script>. By definition, <script type="math/tex">p(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) = p(x \vert \mathcal{S}) \, p(\textbf{w} \vert \mathcal{D})</script>, and <script type="math/tex">\pi(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D}) = \frac{p(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D})}{f(\textbf{x}, \textbf{w})} = \frac{p(\textbf{x} \vert \mathcal{S})}{g(\textbf{x})}</script>. We define <script type="math/tex">\frac{p(\textbf{x} \vert \mathcal{S})}{g(\textbf{x})}</script> as <script type="math/tex">\pi(\textbf{x} \vert \mathcal{S})</script>.</p>
+
+<h2 id="a-simple-example-to-understand-the-implications-of-vq-bnn">A simple example to understand the implications of VQ-BNN</h2>
+
+<p>For a better understanding of VQ-BNN, we consider a simple experiment. This experiment predicts output <script type="math/tex">\textbf{y}</script> for a sequence <script type="math/tex">\mathcal{S}</script> of input data <script type="math/tex">\textbf{x}</script> with a noise, by using NN weight <script type="math/tex">\textbf{w}</script>.</p>
+
+<p>In this experiment, we compare four methods: The first is  deterministic neural network (<em>DNN</em>). The second is <em>BNN</em>. The third is <em>VQ-DNN</em>, which is VQ-BNN with a deterministic NN. In other words, VQ-DNN uses a single weight in inference phase, and compensates a prediction with memorized predictions. The last is <em>VQ-BNN</em>. VQ-BNN uses multiple NN weights, and compensates a prediction with memorized predictions.</p>
+
+<table style="width:100%">
+  <tr style="text-align: center;">
+  <th style="width:25%">DNN</th>
+  <th style="width:25%">BNN</th>
+  <th style="width:25%">VQ-DNN</th>
+  <th style="width:25%">VQ-BNN</th>
+  </tr>
+  <tr>
+  <td style="width:25%">
+  <a href="/assets/documentation/vqbnn/simple-linear-regression/dnn_xw0-1b13418c47b60b8de55fe030d668886f08a7455f73efaddeac3ae9af24b80215.gif">
+  <img src="/assets/documentation/vqbnn/simple-linear-regression/dnn_xw0-1b13418c47b60b8de55fe030d668886f08a7455f73efaddeac3ae9af24b80215.gif" alt="dnn_xw0" class="zooming" data-rjs="/assets/documentation/vqbnn/simple-linear-regression/dnn_xw0-1b13418c47b60b8de55fe030d668886f08a7455f73efaddeac3ae9af24b80215.gif" data-zooming-width="307" data-zooming-height="288" />
+</a>
+
+  </td>
+  <td style="width:25%">
+  <a href="/assets/documentation/vqbnn/simple-linear-regression/bnn_xw0-0088c33eebeb7efca2af0760165d9eda6072db04ec50f0adc62d35097ae6ce19.gif">
+  <img src="/assets/documentation/vqbnn/simple-linear-regression/bnn_xw0-0088c33eebeb7efca2af0760165d9eda6072db04ec50f0adc62d35097ae6ce19.gif" alt="bnn_xw0" class="zooming" data-rjs="/assets/documentation/vqbnn/simple-linear-regression/bnn_xw0-0088c33eebeb7efca2af0760165d9eda6072db04ec50f0adc62d35097ae6ce19.gif" data-zooming-width="307" data-zooming-height="288" />
+</a>
+
+  </td>
+  <td style="width:25%">
+  <a href="/assets/documentation/vqbnn/simple-linear-regression/vqdnn_xw0-323d5c542c3d6f2a489f546120ba4f6a847afc263f82557c7b40ee021501dec0.gif">
+  <img src="/assets/documentation/vqbnn/simple-linear-regression/vqdnn_xw0-323d5c542c3d6f2a489f546120ba4f6a847afc263f82557c7b40ee021501dec0.gif" alt="vqdnn_xw0" class="zooming" data-rjs="/assets/documentation/vqbnn/simple-linear-regression/vqdnn_xw0-323d5c542c3d6f2a489f546120ba4f6a847afc263f82557c7b40ee021501dec0.gif" data-zooming-width="307" data-zooming-height="288" />
+</a>
+
+  </td>
+  <td style="width:25%">
+  <a href="/assets/documentation/vqbnn/simple-linear-regression/vqbnn_xw0-cd38b6fb60306c1244dfdbe1369f51864309109b662b99f4ea150827a63494a0.gif">
+  <img src="/assets/documentation/vqbnn/simple-linear-regression/vqbnn_xw0-cd38b6fb60306c1244dfdbe1369f51864309109b662b99f4ea150827a63494a0.gif" alt="vqbnn_xw0" class="zooming" data-rjs="/assets/documentation/vqbnn/simple-linear-regression/vqbnn_xw0-cd38b6fb60306c1244dfdbe1369f51864309109b662b99f4ea150827a63494a0.gif" data-zooming-width="307" data-zooming-height="288" />
+</a>
+
+  </td>
+  </tr>
+  <tr>
+  <td style="width:25%">
+  <a href="/assets/documentation/vqbnn/simple-linear-regression/dnn_xy-ace13af615e8b0050e4f1a4685e040dd1306f12ac97577042bbaeda55a3584af.gif">
+  <img src="/assets/documentation/vqbnn/simple-linear-regression/dnn_xy-ace13af615e8b0050e4f1a4685e040dd1306f12ac97577042bbaeda55a3584af.gif" alt="dnn_xy" class="zooming" data-rjs="/assets/documentation/vqbnn/simple-linear-regression/dnn_xy-ace13af615e8b0050e4f1a4685e040dd1306f12ac97577042bbaeda55a3584af.gif" data-zooming-width="305" data-zooming-height="288" />
+</a>
+
+  </td>
+  <td style="width:25%">
+  <a href="/assets/documentation/vqbnn/simple-linear-regression/bnn_xy-bd9ba6dc3f90f023a9e626514ee89eb29bbb94e67d0685d077d4aea7f49d96e6.gif">
+  <img src="/assets/documentation/vqbnn/simple-linear-regression/bnn_xy-bd9ba6dc3f90f023a9e626514ee89eb29bbb94e67d0685d077d4aea7f49d96e6.gif" alt="bnn_xy" class="zooming" data-rjs="/assets/documentation/vqbnn/simple-linear-regression/bnn_xy-bd9ba6dc3f90f023a9e626514ee89eb29bbb94e67d0685d077d4aea7f49d96e6.gif" data-zooming-width="305" data-zooming-height="288" />
+</a>
+
+  </td>
+  <td style="width:25%">
+  <a href="/assets/documentation/vqbnn/simple-linear-regression/vqdnn_xy-bd6503806c97abb299ad6a64b5bad818bb7685d67a0fd99c64ca50c412d2ea16.gif">
+  <img src="/assets/documentation/vqbnn/simple-linear-regression/vqdnn_xy-bd6503806c97abb299ad6a64b5bad818bb7685d67a0fd99c64ca50c412d2ea16.gif" alt="vqdnn_xy" class="zooming" data-rjs="/assets/documentation/vqbnn/simple-linear-regression/vqdnn_xy-bd6503806c97abb299ad6a64b5bad818bb7685d67a0fd99c64ca50c412d2ea16.gif" data-zooming-width="305" data-zooming-height="288" />
+</a>
+
+  </td>
+  <td style="width:25%">
+  <a href="/assets/documentation/vqbnn/simple-linear-regression/vqbnn_xy-1535cbbb292228d1a959517306b35e3e7635f33cc06751274ec8f71c1248a084.gif">
+  <img src="/assets/documentation/vqbnn/simple-linear-regression/vqbnn_xy-1535cbbb292228d1a959517306b35e3e7635f33cc06751274ec8f71c1248a084.gif" alt="vqbnn_xy" class="zooming" data-rjs="/assets/documentation/vqbnn/simple-linear-regression/vqbnn_xy-1535cbbb292228d1a959517306b35e3e7635f33cc06751274ec8f71c1248a084.gif" data-zooming-width="305" data-zooming-height="288" />
+</a>
+
+  </td>
+  </tr>
+</table>
+
+<p>The figures above shows <script type="math/tex">p(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D})</script> and <script type="math/tex">p(\textbf{x}, \textbf{y} \vert \mathcal{S}, \mathcal{D})</script> approximated by prototype vector samples. Since <script type="math/tex">\mathcal{S}</script> changes over time, <script type="math/tex">p(\textbf{x}, \textbf{w} \vert \mathcal{S}, \mathcal{D})</script> and <script type="math/tex">p(\textbf{x}, \textbf{y} \vert \mathcal{S}, \mathcal{D})</script> also changes accordingly. The size of the circles indicates the importances of each prototype. They also show three kind of marginal distributions: the probability distribution of data <script type="math/tex">p(\textbf{x} \vert \mathcal{S})</script>, the NN weight distribution <script type="math/tex">p(\textbf{w} \vert \mathcal{D})</script>, and the predictive distribution <script type="math/tex">p(\textbf{y} \vert \mathcal{S}, \mathcal{D})</script>. The black dotted lines and gray distributions represent true value.</p>
+
+<p>These results represents the characteristics of DNN, BNN, VQ-DNN, and VQ-BNN. To calculate the predictive distribution, DNN uses a data point and a point estimated NN weight. BNN uses a data point and a NN weight distribution, instead of point-estimated weight. Similar to DNN, VQ-DNN uses a single NN weight, but it estimates the predictive distribution by using previous predictions for the data sequence. VQ-BNN uses both the NN weight distribution and previous predictions for data sequence to estimate predictive distribution.</p>
+
+<p>BNN and VQ-BNN also differ in the sampling method. BNN always samples new NN weights <script type="math/tex">\textbf{w}</script> for a given <script type="math/tex">\textbf{x}</script>, which means that BNN always make new predictions for each input data. In contrast, VQ-BNN calculates predictive distribution in a way that maintains the vector prototypes <script type="math/tex">( \textbf{x}, \textbf{w}, \textbf{y})</script> and only adjusts their importance.</p>
+
+<p>The data in the last frame of this animations is an outlier; the true value at that moment is <script type="math/tex">\textbf{x}_{\text{true}}=0</script>, but the given data is <script type="math/tex">\textbf{x}=0.4</script>. Since DNN and BNN only use the most recent data point to predict results, their predictive dsitributions are highly dependent on the noise of the data. As a result, an unexpected data makes the predictive distributions of DNN and BNN inaccurate. In contrast, VQ-DNN and VQ-BNN smoothen the predictive distribution by using predictions with respect to the previous data. Therefore, VQ-DNN and VQ-BNN give a more accurate and robust predictive result than BNN when the inputs are noisy.</p>
+
+<h2 id="vq-bnn-for-real-world-applications">VQ-BNN for real-world applications</h2>
+
+<p>In order to use VQ-BNN for real-world applications, we need a prototype and importance. For computational efficiency, we have to take the proximate dataset as memorized input data prototypes and derive the importances of the prototypes with a low computational burden.</p>
+
+<p>Data stream analysis, e.g. real-time video processing, is an area where latency is important. We use temporal consistency of data streams to apply VQ-BNN to video sequence; we take recent frames and its predictions as prototypes and we propose an importance model which decreases exponentially over time. Then, we empherically show that VQ-BNN is 30✕ faster than BNN with semantic segmentation task. The predictive performance is comparable to or even better than that of BNN in these experiments. For more detail, please refer to the post <a href="/posts/temporal-smoothing">“Temporal Smoothing for Efficient Uncertainty Estimation”</a>.</p>
+
+<h2 id="further-reading">Further reading</h2>
+
+<ul>
+  <li>This post is based on the paper <a href="https://arxiv.org/abs/1907.05911">“Vector Quantized Bayesian Neural Network Inference for Data Streams”</a>. For more detailed information on VQ-BNN, please refer to the paper. For the implementation of VQ-BNN, please refer to <a href="https://github.com/xxxnell/temporal-smoothing">GitHub</a>. If you find this post or the paper useful, please consider citing the paper. Please contact me with any comments or feedback.</li>
+</ul>
+
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=Vector+Quantized+Bayesian+Neural+Network+for+Efficient+Inference%20-%20https://blog.xxxnell.com/posts/vqbnn%20by%20@xxxnell" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xxxnell.com/posts/vqbnn" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+          </div>
+
+          
+
+        </article>
+        <footer class="footer scrollappear">
+  <!--
+  <p>
+    About <a href="/about" title="About me">Nell</a>.
+  </p>
+  -->
+
+  <div class="lang-sels">
+    
+      
+      <div class="lang-sel" onclick="location.href='/posts/vqbnn';" style="font-weight: bold;">en</div>
+      <div class="lang-div">|</div>
+    
+      
+      <div class="lang-sel" onclick="location.href='/ko/posts/vqbnn';" >ko</div>
+      <div class="lang-div">|</div>
+    
+  </div>
+
+</footer>
+
+      </div>
+    </div>
+  </main>
+  <!-- MathJax -->
+<!-- <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script> -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- utterances https://utteranc.es/ -->
+<script src="https://utteranc.es/client.js"
+        repo="xxxnell/blog"
+        issue-number="9"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90660277-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90660277-1');
+  </script>
+
+
+<script src="/assets/vendor-0fb4b91f7ad6c193a69224eba7a01b691a2d7528ee672607575ccc0df3aea545.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-5baeaec6ae90dfe28952c8193837fef2aee35ad61bcab5287466ddd6cc5b2c31.js" type="text/javascript"></script>
+
+
+
+</body>
+</html>

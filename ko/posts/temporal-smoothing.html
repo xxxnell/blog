@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Nell | 시간적 평활화를 사용한 효율적인 불확실성 예측</title>
+  <meta name="description" content="시간적 평활화가 비디오 처리에서 효율적으로 불확실성을 예측할 수 있음을 보입니다.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="시간적 평활화를 사용한 효율적인 불확실성 예측">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://blog.xxxnell.com/posts/temporal-smoothing">
+  <meta property="og:description" content="시간적 평활화가 비디오 처리에서 효율적으로 불확실성을 예측할 수 있음을 보입니다.">
+  <meta property="og:site_name" content="Nell">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://blog.xxxnell.com/posts/temporal-smoothing">
+  <meta name="twitter:title" content="시간적 평활화를 사용한 효율적인 불확실성 예측">
+  <meta name="twitter:description" content="시간적 평활화가 비디오 처리에서 효율적으로 불확실성을 예측할 수 있음을 보입니다.">
+
+  
+    <meta property="og:image" content="https://blog.xxxnell.com/assets/og-image-7e87963071a58c8692d81dcb7623af35cae39dd5b847f8e5c5655ffc333defeb.jpg">
+    <meta name="twitter:image" content="https://blog.xxxnell.com/assets/og-image-7e87963071a58c8692d81dcb7623af35cae39dd5b847f8e5c5655ffc333defeb.jpg">
+  
+
+  <link href="https://blog.xxxnell.com/ko/feed.xml" type="application/rss+xml" rel="alternate" title="Nell Last 10 blog posts" />
+
+  
+
+  
+
+    
+      <link rel="icon" type="image/x-icon" href="/assets/favicon-light-a98c41efc5ed9fcc06ac664c9e2f7a9b3c3b2e0a52357d221fe382f6f4abc8fc.ico">
+      <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-87d1f2a3a19b1500e5c1626a0492025ca5f7f97d24540dc5900288e92112925a.png">
+      <link rel="stylesheet" type="text/css" href="/assets/light-bded5c6deb8bab3a79c4cd4d152b8637904863f012b575643ce274a559926ac5.css">
+    
+
+  
+
+  <!-- MathJax -->
+<!-- <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script> -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- utterances https://utteranc.es/ -->
+<script src="https://utteranc.es/client.js"
+        repo="xxxnell/blog"
+        issue-number="12"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90660277-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90660277-1');
+  </script>
+
+
+<script src="/assets/vendor-0fb4b91f7ad6c193a69224eba7a01b691a2d7528ee672607575ccc0df3aea545.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-5baeaec6ae90dfe28952c8193837fef2aee35ad61bcab5287466ddd6cc5b2c31.js" type="text/javascript"></script>
+
+
+
+
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/ko/" class="header-logo" title="Nell">Nell</a>
+  <ul class="header-links">
+    
+    
+      <li>
+        <a href="https://twitter.com/xxxnell" rel="noreferrer noopener" target="_blank" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-twitter">
+  <use href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter" xlink:href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/xxxnell" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="mailto:xxxxxnell@gmail.com" title="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-email">
+  <use href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email" xlink:href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>시간적 평활화를 사용한 효율적인 불확실성 예측</h1>
+            <p>시간적 평활화가 비디오 처리에서 효율적으로 불확실성을 예측할 수 있음을 보입니다.</p>
+            <div class="article-list-footer">
+  <span class="article-list-date">
+    January 31, 2021
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      8 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/ko/tag/nn" title="See all posts with tag 'Deep Learning'">Deep Learning</a>
+    
+      
+      <a href="/ko/tag/bnn" title="See all posts with tag 'Bayesian Deep Learning'">Bayesian Deep Learning</a>
+    
+  </div>
+</div>
+          </header>
+
+          <div class="article-content">
+            <h2 id="tl-dr">TL; DR</h2>
+
+<ul>
+  <li>베이지안 딥러닝은 결과뿐만 아니라 예측 불확실성까지 추론할 수 있다는 장점이 있지만, 동시에 추론 속도가 상당히 느리다는 단점이 있습니다. 우리는 이를 해결하기 위해 기억된 예측을 사용하는 벡터 양자화 베이지안 딥러닝을 제시했습니다.</li>
+  <li>벡터 양자화 베이지안 딥러닝을 데이터 스트림에 적용시키면 뉴럴넷 예측의 시간적 평활화, 또는 지수이동평균을 얻습니다.</li>
+  <li>시간적 평활화는 베이지안 딥러닝의 계산 속도를 수십 배 빠르게 향상시켜줄 뿐만 아니라, 원래의 베이지안 딥러닝과 비슷하거나 때로는 더 나은 수준의 정확도와 불확실성을 예측할 수 있는 구현하기 간편한 방법입니다.</li>
+</ul>
+
+<h2 id="복습-벡터-양자화-베이지안-딥러닝은-사전에-기억된-예측을-사용해-추론-속도를-향상시킵니다">복습: 벡터 양자화 베이지안 딥러닝은 사전에 기억된 예측을 사용해 추론 속도를 향상시킵니다</h2>
+
+<p>베이지안 딥러닝(BNN, Bayesian neural network)은 결과뿐만 아니라 불확실성까지 예측할 수 있는 방법입니다. 하지만 우리는 <a href="/ko/posts/vqbnn">효율적인 추론을 위한 벡터 양자화 베이지안 딥러닝</a>에서 BNN은 추론 속도가 수십 배 느리다는 단점때문에 실용적으로 쓰이기에 많은 제약이 있다는 문제를 제기했습니다. 그리고 이를 해결하기 위해 사전에 기억된 예측을 사용해 추론 속도를 향상시키는 벡터 양자화 베이지안 딥러닝(VQ-BNN, vector quantized Bayesian neural network)을 제안했습니다.</p>
+
+<p><a href="/assets/documentation/vqbnn/diagrams/bnn-inference-7b72acaa2319e76304aa387e92ed91eb413bfbf0629b6d6b99451ebe8276d5e6.png">
+  <img src="/assets/documentation/vqbnn/diagrams/bnn-inference-7b72acaa2319e76304aa387e92ed91eb413bfbf0629b6d6b99451ebe8276d5e6.png" alt="bnn-inference" class="zooming" data-rjs="/assets/documentation/vqbnn/diagrams/bnn-inference-7b72acaa2319e76304aa387e92ed91eb413bfbf0629b6d6b99451ebe8276d5e6.png" data-zooming-width="" data-zooming-height="" />
+</a></p>
+
+<p>위 그림은 BNN의 추론 과정을 도식화한 것입니다. 즉, BNN 추론은 BNN 모델들의 앙상블 평균이라고 할 수 있습니다. 뉴럴넷을 통해 반복적으로 결과를 예측하는 것은 계산 복잡도가 높으며, 이는 BNN 추론을 느려지게 하는 주요한 원인입니다.</p>
+
+<p><a href="/assets/documentation/vqbnn/diagrams/vqbnn-inference-bddac8701dffd070e90b5d0bed117bff4f95ce4745c1bddd260869f4ff8524cd.png">
+  <img src="/assets/documentation/vqbnn/diagrams/vqbnn-inference-bddac8701dffd070e90b5d0bed117bff4f95ce4745c1bddd260869f4ff8524cd.png" alt="vqbnn-inference" class="zooming" data-rjs="/assets/documentation/vqbnn/diagrams/vqbnn-inference-bddac8701dffd070e90b5d0bed117bff4f95ce4745c1bddd260869f4ff8524cd.png" data-zooming-width="" data-zooming-height="" />
+</a></p>
+
+<p>한편, 위 그림은 VQ-BNN 추론 과정을 도식화한 것입니다. VQ-BNN은 BNN과 달리 관측 데이터에 대해 한 번만 예측을 추론하는 대신, 사전에 기억된 예측을 사용해 이를 보완합니다. 이때, 기억된 예측이 얼마만큼의 중요도(importance)로 결과에 반영될지는 관측된 데이터와 기억된 데이터 (프로토타입) 사이의 유사도를 기반으로 결정합니다. VQ-BNN은 이 과정에서 뉴럴넷을 사용해 예측을 단 한 번만 추론하기 때문에, 효율적으로 결과를 계산할 수 있습니다.</p>
+
+<p>VQ-BNN 추론을 실제로 적용시키기 위해서는 어떤 프로토타입을 기억할 것인지, 중요도를 어떻게 정할 것인지 결정해야 합니다. 이때, 프로토타입과 중요도는 계산 효율성을 위해 다음과 같은 조건을 만족해야 합니다.</p>
+
+<ol>
+  <li><strong>프로토타입</strong>: 가능한 관측 데이터와 비슷한 데이터로 구성되어야 합니다.</li>
+  <li><strong>중요도</strong>: 계산 복잡도가 높지 않아야 합니다.</li>
+</ol>
+
+<p>데이터 스트림 분석, 특히 동영상에 대한 데이터 처리는 추론 속도가 중요한 분야입니다. 동영상은 용량이 크며, 때때로 실시간 처리를 요구할 수도 있습니다. 따라서, 추론 속도가 느린 BNN을 동영상 처리에 접목하는 것은 실용적이지 않은 것처럼 보입니다. 대신 우리는 이 포스트에서 VQ-BNN을 이용해 쉽고 효율적으로 동영상을 처리할 수 있음을 보일 것입니다.</p>
+
+<h2 id="실제-세계의-데이터-스트림은-시간에-따라-연속적으로-변합니다">실제 세계의 데이터 스트림은 시간에 따라 연속적으로 변합니다</h2>
+
+<p>우리는 VQ-BNN을 데이터 스트림에 적용하기 위해 실제 세계의 데이터 스트림의 일반적인 성질을 사용할 것입니다. 즉, 비디오와 같은 데이터 스트림은 시간에 따라 연속적으로 변하는 성질이 있습니다. 이것을 데이터 스트림의 시간적 일관성(temporal consistency) 또는 시간적 유사성(temporal proximity)이라고 부릅니다.</p>
+
+<p><a href="/assets/documentation/temporal-smoothing/diagrams/consistency-515504b6fbda52d6dc7be3b78ecb5a488fafc0d2a260f648824e3be960c9f592.png">
+  <img src="/assets/documentation/temporal-smoothing/diagrams/consistency-515504b6fbda52d6dc7be3b78ecb5a488fafc0d2a260f648824e3be960c9f592.png" alt="consistency" class="zooming" data-rjs="/assets/documentation/temporal-smoothing/diagrams/consistency-515504b6fbda52d6dc7be3b78ecb5a488fafc0d2a260f648824e3be960c9f592.png" data-zooming-width="" data-zooming-height="" />
+</a></p>
+
+<p>위 그림은 비디오의 시간적 일관성에 대한 한 가지 예시를 보여줍니다. 이 비디오 스트림에서 자동차는 timestamp <script type="math/tex">t</script>가 증가할수록 천천히 오른쪽에서 왼쪽으로 연속적으로 움직이고 있습니다. 여기서 가장 최근의 프레임 $t=0$을 관측 데이터라고 하겠습니다.</p>
+
+<p>데이터 스트림의 시간적 일관성 덕분에, 우리는 최근 <script type="math/tex">K</script> 개의 프레임을 프로토타입 <script type="math/tex">\mathcal{S}</script>로 삼음으로써 관측 데이터와 비슷한 프로토타입을 다음과 같이 구성할 수 있습니다.</p>
+
+<script type="math/tex; mode=display">\mathcal{S} = \{ \textbf{x}_t \vert 0 \geq t \geq -K \}</script>
+
+<p>이와 유사하게, 우리는 관측 데이터와 프로토타입 사이의 유사도(즉, 프로토타입의 중요도)를 시간이 지날수록 지수적으로 감소하도록 정할 수 있습니다.</p>
+
+<script type="math/tex; mode=display">\pi(\textbf{x}_{t} \vert \mathcal{S}) = \frac{\exp(- t / \tau)}{\sum_{t=0}^{-K} \exp(- t / \tau)}</script>
+
+<p>여기서 <script type="math/tex">\tau</script>는 감소율을 결정하는 hyperparameter입니다. 분모는 중요도의 합을 1로 만들어주기 위한 정규화 상수(normalizing constant)입니다.</p>
+
+<p>이 둘을 사용하면, VQ-BNN 추론은 시간 <script type="math/tex">t</script>에서 뉴럴넷이 예측하는 확률 <script type="math/tex">p(\textbf{y} \vert \textbf{x}_t, \textbf{w}_t)</script>의 시간에 대한 평활화(temporal smoothing) 또는 뉴럴넷 예측에 대한 지수이동평균(EMA, exponential moving average)로 주어집니다.</p>
+
+<script type="math/tex; mode=display">p(\textbf{y} \vert \mathcal{S}, \mathcal{D}) \simeq  \sum_{t=0}^{-K} \alpha \exp(- t / \tau) \, p(\textbf{y} \vert \textbf{x}_t, \textbf{w}_t)</script>
+
+<p>여기서 <script type="math/tex">\alpha = \left({\sum_{t=0}^{-\infty} \exp(- t / \tau)} \right)^{-1}</script>는 정규화 상수입니다.</p>
+
+<p>이와 같은 프로토타입과 중요도를 사용해 실제로 다음과 같이 구현할 수 있습니다. 분류 문제에 대해 뉴럴넷이 예측하는 확률 <script type="math/tex">p(\textbf{y} \vert \textbf{x}_t, \textbf{w}_t)</script>은 흔히 <code class="highlighter-rouge">Softmax</code>를 이용해 구할 수 있습니다.</p>
+
+<script type="math/tex; mode=display">p(\textbf{y} \vert \mathcal{S}, \mathcal{D}) \simeq \sum_{t=0}^{-K} \alpha \exp(- t / \tau) \, \texttt{Softmax}(\text{NN} (\textbf{x}_{t}, \textbf{w}_{t}))</script>
+
+<p>여기서 <script type="math/tex">\text{NN} (\textbf{x}_{t}, \textbf{w}_{t})</script>은 시간 <script type="math/tex">t</script>에서의 뉴럴넷 로짓(logit)입니다.</p>
+
+<!--
+$$
+p(\textbf{y} \vert \mathcal{S}, \mathcal{D}) \simeq  \sum_{t=0}^{-\infty} \alpha \exp(- t) \, p(\textbf{y} \vert \textbf{x}_t, \textbf{w}_t) 
+$$
+
+$$
+p(\textbf{y} \vert \mathcal{S}, \mathcal{D}) = \alpha \, p(\textbf{y} \vert \textbf{x}_{0}, \textbf{w}_{0}) + (1 - \alpha) \, p_{-1}(\textbf{y} \vert \mathcal{S}, \mathcal{D})
+$$
+-->
+
+<h2 id="semantic-segmentation에-시간적-평활화-적용하기">Semantic segmentation에 시간적 평활화 적용하기</h2>
+
+<p>우리는 앞서 데이터 스트림에 대한 VQ-BNN은 뉴럴넷 예측의 시간적 평활화라는 것을 보였습니다. 이제 이 시간적 평활화를 실제 세계의 문제에 적용시켜보겠습니다. 우리는 아래의 예제에서 BNN을 구현하기 위해 <a href="https://arxiv.org/abs/1506.02142">MC dropout</a>을 사용하겠습니다.</p>
+
+<p><a href="/assets/documentation/temporal-smoothing/diagrams-bnn-5c298941986fc9b4cc3d77de7785ea2830896aab00e1300c372d720f14e52d86.gif">
+  <img src="/assets/documentation/temporal-smoothing/diagrams-bnn-5c298941986fc9b4cc3d77de7785ea2830896aab00e1300c372d720f14e52d86.gif" alt="bnn-inference" class="zooming" data-rjs="/assets/documentation/temporal-smoothing/diagrams-bnn-5c298941986fc9b4cc3d77de7785ea2830896aab00e1300c372d720f14e52d86.gif" data-zooming-width="" data-zooming-height="" />
+</a></p>
+
+<p>Semantic segmentation은 픽셀 단위의 이미지 분류 문제입니다. 위 그림은 BNN을 사용한 semantic segmentation을 묘사하고 있습니다. MC dropout을 BNN으로 사용한다면, 위 그림은 하나의 비디오 프레임에 대해 5번 결과를 예측해 서로 다른 픽셀별 (<code class="highlighter-rouge">Argmax</code>가 아닌) <code class="highlighter-rouge">Softmax</code> 확률 분포를 계산한 뒤, 이를 평균하는 과정을 묘사하고 있습니다. 충분한 예측 성능을 달성하기 위해 일반적으로 30번 결과를 예측해야 하며, 따라서 이 과정은 한 번 뉴럴넷을 수행하는 것에 비해 30배 느려집니다.</p>
+
+<p>한편 BNN은 추론 과정에서 하나의 프레임만을 사용하며, 이 입력 데이터에 크게 의존하는 성질을 갖고 있습니다. 입력은 때때로 모션 블러나 비디오 디포커스와 같은 이유로 비정상적인 데이터를 포함할 수 있으며, 이때 BNN은 잘못된 결과를 내놓게 될 수 있습니다. 이 예제에서 점선 동그라미로 표시된 자동차의 창문은 건물과 구분하기 힘든 부분입니다. 따라서, 대부분의 예측이 전부 부정확한 분류 결과를 나타내고 있습니다.</p>
+
+<p><a href="/assets/documentation/temporal-smoothing/diagrams-vqbnn-f2029d58795bb03d4af42a9a10a3fa5e6d54c00838ee41664070c132ffd25e6c.gif">
+  <img src="/assets/documentation/temporal-smoothing/diagrams-vqbnn-f2029d58795bb03d4af42a9a10a3fa5e6d54c00838ee41664070c132ffd25e6c.gif" alt="vqbnn-inference" class="zooming" data-rjs="/assets/documentation/temporal-smoothing/diagrams-vqbnn-f2029d58795bb03d4af42a9a10a3fa5e6d54c00838ee41664070c132ffd25e6c.gif" data-zooming-width="" data-zooming-height="" />
+</a></p>
+
+<p>위 그림은 시간적 평활화를 사용한 semantic segmentation을 묘사하고 있습니다. 우리는 매 프레임마다 단 한 번만 결과를 예측합니다. 대신 과거의 예측을 기억하며, 가장 최근의 예측과 과거의 예측을 중요도를 사용해 가중 평균함으로써 최종 결과를 도출합니다. 이 과정은 새로운 비디오 프레임에 대해 단 한 번 예측을 수행하기 때문에, 일반적인 결정론적 뉴럴넷 추론과 비슷한 계산 복잡도를 가집니다.</p>
+
+<p>시간적 평활화는 가장 최근의 예측과 동시에 과거의 예측을 사용하므로, 가장 최근의 예측에 대한 오차를 과거의 예측이 보완해 줍니다. 따라서, 입력이나 입력의 예측이 비정상치(outlier)를 포함하고 있더라도 더욱 강건한 예측을 수행할 수 있습니다. 이 예제에서, 가장 최근 프레임에서의 자동차 창문은 건물과 구분하기 어려운 순간이었습니다. 실제로, 가장 최근의 프레임에 대한 예측은 BNN과 마찬가지로 부정확하게 분류되었습니다. 하지만 과거의 프레임에서 자동차의 창문은 비교적 건물과 구분하기 쉬웠으며, 뉴럴넷은 이를 올바르게 분류했습니다.</p>
+
+<h3 id="정성적-결과">정성적 결과</h3>
+
+<div style="width:85%;margin:auto;">
+  <a href="/assets/documentation/temporal-smoothing/diagrams/result-cacbc2bf811b833cd08f4ce99a6b63984a2ce94cf7c2ce3ada4148be6dc8bc3c.png">
+  <img src="/assets/documentation/temporal-smoothing/diagrams/result-cacbc2bf811b833cd08f4ce99a6b63984a2ce94cf7c2ce3ada4148be6dc8bc3c.png" alt="semantic-segmentation-result" class="zooming" data-rjs="/assets/documentation/temporal-smoothing/diagrams/result-cacbc2bf811b833cd08f4ce99a6b63984a2ce94cf7c2ce3ada4148be6dc8bc3c.png" data-zooming-width="" data-zooming-height="" />
+</a>
+
+</div>
+
+<p>앞선 예제에서의 결과를 확인해 보겠습니다. 위의 그림의 두 번째 줄은 자동차에 대한 semantic segmentation 예제의 분류 결과(예측 확률 분포의 <code class="highlighter-rouge">Argmax</code>)를 나타냅니다. 우리가 기대한 대로, BNN은 잘못된 결과를 예측했습니다. 반면, VQ-BNN은 비교적 결과를 정확하게 예측했습니다.</p>
+
+<p>한편 위 그림의 세번째 줄은 신뢰도(예측 확률 분포의 <code class="highlighter-rouge">Max</code>)를 나타냅니다. 여기서 더 밝을수록 더 높은 신뢰도를 뜻하며, 더 어두울수록 높은 예측 불확실성을 나타냅니다. 이 그림에서 보듯이 VQ-BNN은 BNN보다 결과를 지나치게 확신하는 경향이 덜합니다. 이는 VQ-BNN이 모델 불확실성뿐만 아니라 데이터에 대한 불확실성<script type="math/tex">p(\textbf{x} \vert \mathcal{S})</script>까지 동시에 표현하기 때문입니다.</p>
+
+<div style="width:45%;margin:auto;">
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/input-seq1-ac10eccf9348855dc2496a2a927aff9fd787740e9c04986c15c1a70fcf65434b.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/input-seq1-ac10eccf9348855dc2496a2a927aff9fd787740e9c04986c15c1a70fcf65434b.gif" alt="input-seq" class="zooming" data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/input-seq1-ac10eccf9348855dc2496a2a927aff9fd787740e9c04986c15c1a70fcf65434b.gif" data-zooming-width="240" data-zooming-height="180" />
+</a>
+
+</div>
+
+<p>더욱 이해를 돕기 위해, 위와 같은 비디오 시퀀스에 대한 각 방법의 예측 결과 차이를 비교해보겠습니다. 우리는 여기서 일반적인 딥러닝인 결정론적인 딥러닝(DNN, deterministic neural network)과 BNN(MC dropout)을 기준치로 두겠습니다. 그리고 이들을 DNN과 BNN의 시간적 평활화인 VQ-DNN 및 VQ-BNN과 비교하겠습니다.</p>
+
+<p><a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence-b943781bf0b1a982f52e756ea63e9a8fec266f10455e0c32878acef2bd0258ff.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence-b943781bf0b1a982f52e756ea63e9a8fec266f10455e0c32878acef2bd0258ff.gif" alt="vqbnn-unc-seq" class="zooming" data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence-b943781bf0b1a982f52e756ea63e9a8fec266f10455e0c32878acef2bd0258ff.gif" data-zooming-width="1080" data-zooming-height="810" />
+</a></p>
+
+<!--
+<table cellspacing="3" style="width:100%;text-align:center;">
+  <tr>
+    <th style="font-size:18px">DNN <div style="font-size:16px"></div></th>
+    <th style="font-size:18px">VQ-DNN <div style="font-size:16px"></div></th>
+    <th style="font-size:18px">BNN <div style="font-size:16px"></div></th>
+    <th style="font-size:18px">VQ-BNN <div style="font-size:16px"></div></th>
+  </tr>
+  <tr>
+    <td>
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/dnn-res-seq1-8575795ca10733de2bf284094fc18f891ba7b08491fa797142c4140e79bee5d7.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/dnn-res-seq1-8575795ca10733de2bf284094fc18f891ba7b08491fa797142c4140e79bee5d7.gif" alt="dnn-res-seq" class="zooming"
+    data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/dnn-res-seq1-8575795ca10733de2bf284094fc18f891ba7b08491fa797142c4140e79bee5d7.gif"
+    data-zooming-width="240"
+    data-zooming-height="180"
+  />
+</a>
+
+    </td>
+    <td>
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqdnn-res-seq1-64c383a1ba404f76a87a7bcd253b92c4beb54a2237ca45aa76854e4c966c6e88.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqdnn-res-seq1-64c383a1ba404f76a87a7bcd253b92c4beb54a2237ca45aa76854e4c966c6e88.gif" alt="vqdnn-res-seq" class="zooming"
+    data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqdnn-res-seq1-64c383a1ba404f76a87a7bcd253b92c4beb54a2237ca45aa76854e4c966c6e88.gif"
+    data-zooming-width="240"
+    data-zooming-height="180"
+  />
+</a>
+
+    </td>
+    <td>
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/bnn-res-seq1-999334db8b7b43ada4f923cc5405cc3909f79b2d2aee61bbbc6d98571fe7ec7f.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/bnn-res-seq1-999334db8b7b43ada4f923cc5405cc3909f79b2d2aee61bbbc6d98571fe7ec7f.gif" alt="bnn-res-seq" class="zooming"
+    data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/bnn-res-seq1-999334db8b7b43ada4f923cc5405cc3909f79b2d2aee61bbbc6d98571fe7ec7f.gif"
+    data-zooming-width="240"
+    data-zooming-height="180"
+  />
+</a>
+
+    </td>
+    <td>
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqbnn-res-seq1-42689973d263d63d80f4020ae9b564b1f94e95f947c719df85bb911f1261aaa9.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqbnn-res-seq1-42689973d263d63d80f4020ae9b564b1f94e95f947c719df85bb911f1261aaa9.gif" alt="vqbnn-res-seq" class="zooming"
+    data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqbnn-res-seq1-42689973d263d63d80f4020ae9b564b1f94e95f947c719df85bb911f1261aaa9.gif"
+    data-zooming-width="240"
+    data-zooming-height="180"
+  />
+</a>
+
+    </td>
+  </tr>
+  <tr>
+    <td>
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/dnn-unc-seq1-1d1cf6431d5ca2b8e613dbb8931ea44649e359dc7e832961e52c114fc8a34fe4.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/dnn-unc-seq1-1d1cf6431d5ca2b8e613dbb8931ea44649e359dc7e832961e52c114fc8a34fe4.gif" alt="dnn-unc-seq" class="zooming"
+    data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/dnn-unc-seq1-1d1cf6431d5ca2b8e613dbb8931ea44649e359dc7e832961e52c114fc8a34fe4.gif"
+    data-zooming-width="240"
+    data-zooming-height="180"
+  />
+</a>
+
+    </td>
+    <td>
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqdnn-unc-seq1-7e21a4bd90f2db5aaea59efbd786a995de9bc1fecf68052c9918e5ee073a8990.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqdnn-unc-seq1-7e21a4bd90f2db5aaea59efbd786a995de9bc1fecf68052c9918e5ee073a8990.gif" alt="vqdnn-unc-seq1" class="zooming"
+    data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqdnn-unc-seq1-7e21a4bd90f2db5aaea59efbd786a995de9bc1fecf68052c9918e5ee073a8990.gif"
+    data-zooming-width="240"
+    data-zooming-height="180"
+  />
+</a>
+
+    </td>
+    <td>
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/bnn-unc-seq1-17d805226fca398249bc1153260d989b793181a4cecbb5c611df0f113f16321e.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/bnn-unc-seq1-17d805226fca398249bc1153260d989b793181a4cecbb5c611df0f113f16321e.gif" alt="bnn-unc-seq" class="zooming"
+    data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/bnn-unc-seq1-17d805226fca398249bc1153260d989b793181a4cecbb5c611df0f113f16321e.gif"
+    data-zooming-width="240"
+    data-zooming-height="180"
+  />
+</a>
+
+    </td>
+    <td>
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqbnn-unc-seq1-730a2181a6679291dec3719972612d4e9df8aeca0cbaed5d5447aa231ca4c4fd.gif">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqbnn-unc-seq1-730a2181a6679291dec3719972612d4e9df8aeca0cbaed5d5447aa231ca4c4fd.gif" alt="vqbnn-unc-seq" class="zooming"
+    data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/sequence/vqbnn-unc-seq1-730a2181a6679291dec3719972612d4e9df8aeca0cbaed5d5447aa231ca4c4fd.gif"
+    data-zooming-width="240"
+    data-zooming-height="180"
+  />
+</a>
+
+    </td>
+  </tr>
+</table> 
+-->
+
+<p>이 애니메이션은 각 방법의 예측 결과를 보여줍니다. 첫번째 줄은 결정론적 딥러닝(DNN)과 BNN의 결과를 나타내며, 두번째 줄은 이들의 시간적 평활화 결과를 나타냅니다.</p>
+
+<p>위와 같은 결과는 DNN과 BNN의 예측 결과는 잡음이 있다는 것을 보여줍니다. 다시 말하면, 이들의 객체에 대한 분류 결과는 불규칙적이고 무작위로 변경됩니다. 실제로 이와 같은 현상은 semantic segmentation뿐만이 아니라 딥러닝을 사용한 이미지 처리에서 전반적으로 나타나는 현상입니다. 예를들어, object detection에서 bounding box의 크기가 부자연스럽게 변경되거나, 없어졌다 생기기기도 하는 것을 상상해 보시기 바랍니다. 반면, 시간적 평활화는 이 잡음을 감소시켜주고 예측 결과를 안정화시키는 역할을 합니다. 위의 결과에서 보듯이, VQ-DNN과 VQ-BNN의 예측 결과는 부드럽게 바뀝니다. 결론적으로, 시간적 평활화는 뉴럴넷의 예측을 좀 더 자연스럽게 하는데 사용될 수도 있을 것입니다.</p>
+
+<h3 id="정량적-결과">정량적 결과</h3>
+
+<p>우리는 앞서 데이터에 노이즈가 많다면 VQ-BNN이 BNN에 비해 정확한 결과를 낼 수 있을 것이라고 추측했습니다. 아래와 같은 정량적 결과는 이 추측이 맞을 수 있음을 보여줍니다.</p>
+
+<style>
+.styled-table {
+    border-collapse: collapse;
+    margin: 30px auto;
+    font-size: 17x;
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 10px 1%;
+}
+
+.styled-table tbody tr:nth-of-type(even) {}
+
+.styled-table tbody tr:first-of-type {
+    border-top: 2px solid black;
+    border-bottom: 1px solid black;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid black;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}
+</style>
+
+<table cellspacing="3" style="width:90%;text-align:center;" class="styled-table">
+  <tr>
+    <th>Method</th>
+    <th>Rel Thr<div>(%, ↑)</div></th>
+    <th>NLL <div>(↓)</div></th>
+    <th>Acc <div>(%, ↑)</div></th>
+    <th>ECE <div>(%, ↓)</div></th>
+  </tr>
+  <tr>
+    <td>DNN</td><td><b>100</b></td><td>0.314</td><td>91.1</td><td>4.31</td>
+  </tr>
+  <tr>
+    <td>BNN</td><td>2.99</td><td>0.276</td><td>91.8</td><td>3.71</td>
+  </tr>
+  <tr>
+    <td>VQ-DNN</td><td>98.2</td><td>0.284</td><td>91.2</td><td>3.00</td>
+  </tr>
+  <tr>
+    <td>VQ-BNN</td><td>92.7</td><td><b>0.253</b></td><td><b>92.0</b></td><td><b>2.24</b></td>
+  </tr>
+</table>
+
+<p>위의 표는 semantic segmentation에서 각 방법의 성능을 보여줍니다. 화살표는 각 지표가 어떤 방향으로 변해야 더 나은지를 나타냅니다.</p>
+
+<p>이 표에서 우리는 각 방법의 추론 속도를 비교하기 위해 초당 비디오 프레임이 몇 장 처리되는지를 측정했습니다. 그리고 DNN을 기준으로 이를 상대적으로 비교한 상대적 처리량(Rel Thr, relative throughput)을 지표로 사용했습니다. 이 실험에서 우리는 30번 뉴럴넷 추론을 반복한 BNN을 사용했기 때문에, BNN의 처리량은 DNN에 비해 1/30배에 불과합니다. 반면, VQ-BNN은 DNN과 유사한 수준의 처리량을 보여주며, BNN보다 30배 빠릅니다.</p>
+
+<p>한편 이 표에서 우리는 각 방법의 예측 성능을 비교하기 위해 negative log-likelihood (NLL), 정확도 (Acc, accuracy), expected calibration error (ECE)를 측정했습니다. 우선, 우리가 기대한 대로 BNN은 DNN보다 더 나은 예측 성능을 보여줍니다. VQ-BNN의 예측 성능은 우리가 기대한 것을 넘어서는 결과를 보여줍니다. VQ-BNN은 DNN보다 나을 뿐만 아니라, BNN보다도 나은 성능을 보여줍니다. 마찬가지로, VQ-DNN의 결과는 BNN을 사용하지 않더라도 시간적 평활화가 예측 성능을 향상시킨다는 것을 보여줍니다.</p>
+
+<p>위의 결과는 BNN으로 MC dropout을 사용해서 얻어졌지만, <a href="https://arxiv.org/abs/1612.01474">deep ensemble</a>을 사용하더라도 비슷한 결과를 얻을 수 있습니다. 5개의 서로 다른 모델을 사용했을때 deep ensemble의 NLL은 0.216을 기록했습니다. 한편, 이 deep ensemble에 시간적 평활화를 적용시키면 deep ensemble을 사용한 성능과 비슷한 수준인 0.235의 NLL을 얻을 수 있었습니다.</p>
+
+<div style="width:85%;margin:auto;">
+  <a href="/assets/documentation/temporal-smoothing/semantic-segmentation/reliability-diagram-extended-b9b0d294f908966be29e1e317755965dbe58f8f241511e2acd622f8859484c8a.png">
+  <img src="/assets/documentation/temporal-smoothing/semantic-segmentation/reliability-diagram-extended-b9b0d294f908966be29e1e317755965dbe58f8f241511e2acd622f8859484c8a.png" alt="reliability-diagram" class="zooming" data-rjs="/assets/documentation/temporal-smoothing/semantic-segmentation/reliability-diagram-extended-b9b0d294f908966be29e1e317755965dbe58f8f241511e2acd622f8859484c8a.png" data-zooming-width="" data-zooming-height="" />
+</a>
+
+</div>
+
+<p>위의 결과는 각 방법에 대한 reliability diagram을 보여줍니다. 위 표와 마찬가지로, 이 그림은 시간적 평활화가 예측 불확실성을 교정(calibration)하는데 유의미한 효과가 있음을 보여줍니다. 이 결과는 DNN은 가장 불확실성이 교정되어있지 않다는 것을 보여줍니다. 반면, VQ-BNN은 DNN은 물론, BNN보다도 더 신뢰할 수 있는 불확실성을 추정한다는 것을 확인할 수 있습니다. 마찬가지로, VQ-DNN도 DNN과 BNN 모두에 비해 더 신뢰할 수 있는 불확실성을 추정하고 있습니다.</p>
+
+<p>결론적으로, 과거로부터 기억된 예측을 사용하는 것은 계산 및 예측 성능을 개선시키고 특히 불확실성을 추정하는데 효과적입니다. 시간적 평활화는 데이터 스트림에서 이전의 예측을 사용하는 구현하기 간편한 방법이며, 예측 성능에 대한 희생 없이 베이지안 딥러닝의 추론 속도를 수십 배 빠르게 향상시키는 기법입니다.</p>
+
+<h2 id="더-읽을거리">더 읽을거리</h2>
+
+<ul>
+  <li>이 포스트는 논문 <a href="https://arxiv.org/abs/1907.05911">“Vector Quantized Bayesian Neural Network Inference for Data Streams”</a>을 기반으로 작성되었습니다. VQ-BNN에 대한 더욱 엄밀하고 자세한 사항은 해당 논문을 참고해주시기 바랍니다. VQ-BNN의 구현은 <a href="https://github.com/xxxnell/temporal-smoothing">GitHub</a>을 참고해주시기 바랍니다. 만약 이 포스트나 논문이 유용하다고 생각하신다면, 위 논문을 인용해주시면 감사하겠습니다. 이와 관련된 첨언이나 피드백이 있으시다면, 편하게 연락해 주시기 바랍니다.</li>
+  <li>Semantic segmentation에서의 더 많은 정성적인 예시는 <a href="https://github.com/xxxnell/temporal-smoothing/blob/master/resources/README.md">GitHub</a>을 참고해 주시기 바랍니다.</li>
+  <li>우리는 과거의 예측뿐만이 아닌 미래의 예측을 사용해 예측 성능을 더욱 향상시킬 수 있다는 것을 보였습니다. 자세한 사항은 <a href="https://arxiv.org/abs/1907.05911">논문</a>의 Appendix D.1과 Figure 11을 참고해 주시기 바랍니다.</li>
+  <li>
+    <p>아래는 monochronic depth estimation에서 각 방법이 예측하는 결과와 불확실성의 예를 보여줍니다. 이 예에서 VQ-DNN이 나타내는 시간적 평활화로부터의 불확실성은 BNN에 나타난 불확실성과 다른 특징을 보임을 알 수 있습니다. VQ-BNN은 이 두 가지 종류의 불확실성을 동시에 포함하고 있습니다. 이 그림에 대한 상세한 설명은 <a href="https://arxiv.org/abs/1907.05911">논문</a>의 Appendix D.2를 참고해 주시기 바랍니다.</p>
+
+    <p><a href="/assets/documentation/temporal-smoothing/depth-estimation/visualize/result-e6b3f7d710a7fdd371577b4ef55e51b83c4915f3d177cf59ae9ab29e159d7d9a.png">
+<img src="/assets/documentation/temporal-smoothing/depth-estimation/visualize/result-e6b3f7d710a7fdd371577b4ef55e51b83c4915f3d177cf59ae9ab29e159d7d9a.png" alt="depth-estimation-result" class="zooming" data-rjs="/assets/documentation/temporal-smoothing/depth-estimation/visualize/result-e6b3f7d710a7fdd371577b4ef55e51b83c4915f3d177cf59ae9ab29e159d7d9a.png" data-zooming-width="" data-zooming-height="" />
+</a></p>
+  </li>
+</ul>
+
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=%EC%8B%9C%EA%B0%84%EC%A0%81+%ED%8F%89%ED%99%9C%ED%99%94%EB%A5%BC+%EC%82%AC%EC%9A%A9%ED%95%9C+%ED%9A%A8%EC%259...%20-%20https://blog.xxxnell.com/posts/temporal-smoothing%20by%20@xxxnell" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xxxnell.com/posts/temporal-smoothing" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+          </div>
+
+          
+
+        </article>
+        <footer class="footer scrollappear">
+  <!--
+  <p>
+    About <a href="/ko/about" title="About me">Nell</a>.
+  </p>
+  -->
+
+  <div class="lang-sels">
+    
+      
+      <div class="lang-sel" onclick="location.href='/posts/temporal-smoothing';" >en</div>
+      <div class="lang-div">|</div>
+    
+      
+      <div class="lang-sel" onclick="location.href='/ko/posts/temporal-smoothing';" style="font-weight: bold;">ko</div>
+      <div class="lang-div">|</div>
+    
+  </div>
+
+</footer>
+
+      </div>
+    </div>
+  </main>
+  <!-- MathJax -->
+<!-- <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script> -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- utterances https://utteranc.es/ -->
+<script src="https://utteranc.es/client.js"
+        repo="xxxnell/blog"
+        issue-number="12"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90660277-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90660277-1');
+  </script>
+
+
+<script src="/assets/vendor-0fb4b91f7ad6c193a69224eba7a01b691a2d7528ee672607575ccc0df3aea545.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-5baeaec6ae90dfe28952c8193837fef2aee35ad61bcab5287466ddd6cc5b2c31.js" type="text/javascript"></script>
+
+
+
+</body>
+</html>

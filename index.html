@@ -1,36 +1,369 @@
----
-layout: default
-title: "Home"
-description: ""
----
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Nell | Home</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<ul class="article-list">
-  {% for post in paginator.posts %}
-    <li class="article-list-item {% if site.scrollappear_enabled %}scrollappear{% endif %}">
-      <a href="{{ post.url | relative_url }}" title="{{ post.title }}">
+  <meta property="og:title" content="Home">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://blog.xxxnell.com/">
+  <meta property="og:description" content="">
+  <meta property="og:site_name" content="Nell">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://blog.xxxnell.com/">
+  <meta name="twitter:title" content="Home">
+  <meta name="twitter:description" content="">
+
+  
+    <meta property="og:image" content="https://blog.xxxnell.com/assets/og-image-7e87963071a58c8692d81dcb7623af35cae39dd5b847f8e5c5655ffc333defeb.jpg">
+    <meta name="twitter:image" content="https://blog.xxxnell.com/assets/og-image-7e87963071a58c8692d81dcb7623af35cae39dd5b847f8e5c5655ffc333defeb.jpg">
+  
+
+  <link href="https://blog.xxxnell.com/feed.xml" type="application/rss+xml" rel="alternate" title="Nell Last 10 blog posts" />
+
+  
+
+  
+
+    
+      <link rel="icon" type="image/x-icon" href="/assets/favicon-light-a98c41efc5ed9fcc06ac664c9e2f7a9b3c3b2e0a52357d221fe382f6f4abc8fc.ico">
+      <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-87d1f2a3a19b1500e5c1626a0492025ca5f7f97d24540dc5900288e92112925a.png">
+      <link rel="stylesheet" type="text/css" href="/assets/light-bded5c6deb8bab3a79c4cd4d152b8637904863f012b575643ce274a559926ac5.css">
+    
+
+  
+
+  <!-- MathJax -->
+<!-- <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script> -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- utterances https://utteranc.es/ -->
+<script src="https://utteranc.es/client.js"
+        repo="xxxnell/blog"
+        issue-number=""
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90660277-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90660277-1');
+  </script>
+
+
+<script src="/assets/vendor-0fb4b91f7ad6c193a69224eba7a01b691a2d7528ee672607575ccc0df3aea545.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-5baeaec6ae90dfe28952c8193837fef2aee35ad61bcab5287466ddd6cc5b2c31.js" type="text/javascript"></script>
+
+
+
+
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="Nell">Nell</a>
+  <ul class="header-links">
+    
+    
+      <li>
+        <a href="https://twitter.com/xxxnell" rel="noreferrer noopener" target="_blank" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-twitter">
+  <use href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter" xlink:href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/xxxnell" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="mailto:xxxxxnell@gmail.com" title="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-email">
+  <use href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email" xlink:href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+
+
+        <ul class="article-list">
+  
+    <li class="article-list-item scrollappear">
+      <a href="/posts/temporal-smoothing" title="Temporal Smoothing for Efficient Uncertainty Estimation">
         <h5>
-          {{ post.title }}
-          {% include svg-icon.html icon="arrow-right" %}
+          Temporal Smoothing for Efficient Uncertainty Estimation
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-arrow-right">
+  <use href="/assets/arrow-right-05feb9da52810d15348895a9a885c61803f4d2ae681b4fc442b285fef184dd2b.svg#icon-arrow-right" xlink:href="/assets/arrow-right-05feb9da52810d15348895a9a885c61803f4d2ae681b4fc442b285fef184dd2b.svg#icon-arrow-right"></use>
+</svg>
+
         </h5>
       </a>
       <p>
-        {% if post.description %}
-          {{ post.description }}  
-        {% else %}
-          {{ post.excerpt }}
-        {% endif %}
+        
+          We show that temporal smoothing is an efficient method to estimate uncertainty in video stream processing.  
+        
       </p>
-      {% include article/info-footer.html post=post %}
+      <div class="article-list-footer">
+  <span class="article-list-date">
+    January 31, 2021
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      9 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/tag/nn" title="See all posts with tag 'Deep Learning'">Deep Learning</a>
+    
+      
+      <a href="/tag/bnn" title="See all posts with tag 'Bayesian Deep Learning'">Bayesian Deep Learning</a>
+    
+  </div>
+</div>
     </li>
-  {% endfor %}
-  {% if paginator.total_pages > 1 %}
-    <li class="article-pagination {% if site.settings.scrollappear_enabled %}scrollappear{% endif %}">
-      {% if paginator.next_page %}
-        <a href="{{ paginator.next_page_path }}" class="article-pagination-left">{% include svg-icon.html icon="arrow-left" %} Older posts</a>
-      {% endif %}
-      {% if paginator.previous_page %}
-        <a href="{{ paginator.previous_page_path }}" class="article-pagination-right">Newer posts {% include svg-icon.html icon="arrow-right" %}</a>
-      {% endif %}
+  
+    <li class="article-list-item scrollappear">
+      <a href="/posts/vqbnn" title="Vector Quantized Bayesian Neural Network for Efficient Inference">
+        <h5>
+          Vector Quantized Bayesian Neural Network for Efficient Inference
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-arrow-right">
+  <use href="/assets/arrow-right-05feb9da52810d15348895a9a885c61803f4d2ae681b4fc442b285fef184dd2b.svg#icon-arrow-right" xlink:href="/assets/arrow-right-05feb9da52810d15348895a9a885c61803f4d2ae681b4fc442b285fef184dd2b.svg#icon-arrow-right"></use>
+</svg>
+
+        </h5>
+      </a>
+      <p>
+        
+          We propose a novel method to significantly improve the inference speed of Bayesian neural networks by using previously memorized predictions.  
+        
+      </p>
+      <div class="article-list-footer">
+  <span class="article-list-date">
+    January 30, 2021
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      12 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/tag/nn" title="See all posts with tag 'Deep Learning'">Deep Learning</a>
+    
+      
+      <a href="/tag/bnn" title="See all posts with tag 'Bayesian Deep Learning'">Bayesian Deep Learning</a>
+    
+  </div>
+</div>
     </li>
-  {% endif %}
+  
+    <li class="article-list-item scrollappear">
+      <a href="/posts/formalization" title="스칼라 클래스의 일반적인 형식화">
+        <h5>
+          스칼라 클래스의 일반적인 형식화
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-arrow-right">
+  <use href="/assets/arrow-right-05feb9da52810d15348895a9a885c61803f4d2ae681b4fc442b285fef184dd2b.svg#icon-arrow-right" xlink:href="/assets/arrow-right-05feb9da52810d15348895a9a885c61803f4d2ae681b4fc442b285fef184dd2b.svg#icon-arrow-right"></use>
+</svg>
+
+        </h5>
+      </a>
+      <p>
+        
+          모든 스칼라 클래스를 작성할 때 가장 우선적으로 갖춰야 할 일반적인 형식을 제안합니다. 이 형식은 스칼라 클래스를 가독성 높고 쉽게 확장 가능하도록 합니다.  
+        
+      </p>
+      <div class="article-list-footer">
+  <span class="article-list-date">
+    July 26, 2018
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      13 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/tag/scala" title="See all posts with tag 'Scala'">Scala</a>
+    
+  </div>
+</div>
+    </li>
+  
+  
 </ul>
+
+        <footer class="footer scrollappear">
+  <!--
+  <p>
+    About <a href="/about" title="About me">Nell</a>.
+  </p>
+  -->
+
+  <div class="lang-sels">
+    
+      
+      <div class="lang-sel" onclick="location.href='/';" style="font-weight: bold;">en</div>
+      <div class="lang-div">|</div>
+    
+      
+      <div class="lang-sel" onclick="location.href='/ko/';" >ko</div>
+      <div class="lang-div">|</div>
+    
+  </div>
+
+</footer>
+
+      </div>
+    </div>
+  </main>
+  <!-- MathJax -->
+<!-- <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script> -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- utterances https://utteranc.es/ -->
+<script src="https://utteranc.es/client.js"
+        repo="xxxnell/blog"
+        issue-number=""
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90660277-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90660277-1');
+  </script>
+
+
+<script src="/assets/vendor-0fb4b91f7ad6c193a69224eba7a01b691a2d7528ee672607575ccc0df3aea545.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-5baeaec6ae90dfe28952c8193837fef2aee35ad61bcab5287466ddd6cc5b2c31.js" type="text/javascript"></script>
+
+
+
+</body>
+</html>

@@ -4,19 +4,19 @@
     <title>Nell</title>
     <description></description>
     <link>https://blog.xxxnell.com</link>
-    <atom:link href="https://blog.xxxnell.com/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.xxxnell.com/ko/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>Temporal Smoothing for Efficient Uncertainty Estimation</title>
-        <description>We show that temporal smoothing is an efficient method to estimate uncertainty in video stream processing.</description>
+        <title>시간적 평활화를 사용한 효율적인 불확실성 예측</title>
+        <description>시간적 평활화가 비디오 처리에서 효율적으로 불확실성을 예측할 수 있음을 보입니다.</description>
         <pubDate>Sun, 31 Jan 2021 00:00:00 +0900</pubDate>
         <link>https://blog.xxxnell.com/posts/temporal-smoothing</link>
         <guid isPermaLink="true">https://blog.xxxnell.com/posts/temporal-smoothing</guid>
       </item>
     
       <item>
-        <title>Vector Quantized Bayesian Neural Network for Efficient Inference</title>
-        <description>We propose a novel method to significantly improve the inference speed of Bayesian neural networks by using previously memorized predictions.</description>
+        <title>효율적인 추론을 위한 벡터 양자화 베이지안 딥러닝</title>
+        <description>사전에 기억된 예측을 사용해 베이지안 딥러닝의 추론 속도를 향상시키는 벡터 양자화 베이지안 딥러닝을 제안합니다.</description>
         <pubDate>Sat, 30 Jan 2021 00:00:00 +0900</pubDate>
         <link>https://blog.xxxnell.com/posts/vqbnn</link>
         <guid isPermaLink="true">https://blog.xxxnell.com/posts/vqbnn</guid>

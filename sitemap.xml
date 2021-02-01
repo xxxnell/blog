@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>https://blog.xxxnell.com/tag/bnn/</loc>
+<lastmod>2021-02-01T12:08:14+09:00</lastmod>
+</url>
+<url>
+<loc>https://blog.xxxnell.com/tag/nn/</loc>
+<lastmod>2021-02-01T12:08:14+09:00</lastmod>
+</url>
+<url>
+<loc>https://blog.xxxnell.com/tag/scala/</loc>
+<lastmod>2021-02-01T12:08:14+09:00</lastmod>
+</url>
+<url>
+<loc>https://blog.xxxnell.com/posts/formalization</loc>
+<lastmod>2018-07-26T00:00:00+09:00</lastmod>
+</url>
+<url>
+<loc>https://blog.xxxnell.com/posts/vqbnn</loc>
+<lastmod>2021-01-30T00:00:00+09:00</lastmod>
+</url>
+<url>
+<loc>https://blog.xxxnell.com/posts/temporal-smoothing</loc>
+<lastmod>2021-01-31T00:00:00+09:00</lastmod>
+</url>
+<url>
+<loc>https://blog.xxxnell.com/about</loc>
+</url>
+<url>
+<loc>https://blog.xxxnell.com/</loc>
+</url>
+</urlset>

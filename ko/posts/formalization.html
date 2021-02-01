@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Nell | 스칼라 클래스의 일반적인 형식화</title>
+  <meta name="description" content="모든 스칼라 클래스를 작성할 때 가장 우선적으로 갖춰야 할 일반적인 형식을 제안합니다. 이 형식은 스칼라 클래스를 가독성 높고 쉽게 확장 가능하도록 합니다.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="스칼라 클래스의 일반적인 형식화">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://blog.xxxnell.com/posts/formalization">
+  <meta property="og:description" content="모든 스칼라 클래스를 작성할 때 가장 우선적으로 갖춰야 할 일반적인 형식을 제안합니다. 이 형식은 스칼라 클래스를 가독성 높고 쉽게 확장 가능하도록 합니다.">
+  <meta property="og:site_name" content="Nell">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://blog.xxxnell.com/posts/formalization">
+  <meta name="twitter:title" content="스칼라 클래스의 일반적인 형식화">
+  <meta name="twitter:description" content="모든 스칼라 클래스를 작성할 때 가장 우선적으로 갖춰야 할 일반적인 형식을 제안합니다. 이 형식은 스칼라 클래스를 가독성 높고 쉽게 확장 가능하도록 합니다.">
+
+  
+    <meta property="og:image" content="https://blog.xxxnell.com/assets/og-image-7e87963071a58c8692d81dcb7623af35cae39dd5b847f8e5c5655ffc333defeb.jpg">
+    <meta name="twitter:image" content="https://blog.xxxnell.com/assets/og-image-7e87963071a58c8692d81dcb7623af35cae39dd5b847f8e5c5655ffc333defeb.jpg">
+  
+
+  <link href="https://blog.xxxnell.com/ko/feed.xml" type="application/rss+xml" rel="alternate" title="Nell Last 10 blog posts" />
+
+  
+
+  
+
+    
+      <link rel="icon" type="image/x-icon" href="/assets/favicon-light-a98c41efc5ed9fcc06ac664c9e2f7a9b3c3b2e0a52357d221fe382f6f4abc8fc.ico">
+      <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-87d1f2a3a19b1500e5c1626a0492025ca5f7f97d24540dc5900288e92112925a.png">
+      <link rel="stylesheet" type="text/css" href="/assets/light-bded5c6deb8bab3a79c4cd4d152b8637904863f012b575643ce274a559926ac5.css">
+    
+
+  
+
+  <!-- MathJax -->
+<!-- <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script> -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- utterances https://utteranc.es/ -->
+<script src="https://utteranc.es/client.js"
+        repo="xxxnell/blog"
+        issue-number="8"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90660277-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90660277-1');
+  </script>
+
+
+<script src="/assets/vendor-0fb4b91f7ad6c193a69224eba7a01b691a2d7528ee672607575ccc0df3aea545.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-5baeaec6ae90dfe28952c8193837fef2aee35ad61bcab5287466ddd6cc5b2c31.js" type="text/javascript"></script>
+
+
+
+
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/ko/" class="header-logo" title="Nell">Nell</a>
+  <ul class="header-links">
+    
+    
+      <li>
+        <a href="https://twitter.com/xxxnell" rel="noreferrer noopener" target="_blank" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-twitter">
+  <use href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter" xlink:href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/xxxnell" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="mailto:xxxxxnell@gmail.com" title="Email">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-email">
+  <use href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email" xlink:href="/assets/email-782473193bf750036fdb90e8daa075508a20509d01854c09f3237c144a3f0601.svg#icon-email"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>스칼라 클래스의 일반적인 형식화</h1>
+            <p>모든 스칼라 클래스를 작성할 때 가장 우선적으로 갖춰야 할 일반적인 형식을 제안합니다. 이 형식은 스칼라 클래스를 가독성 높고 쉽게 확장 가능하도록 합니다.</p>
+            <div class="article-list-footer">
+  <span class="article-list-date">
+    July 26, 2018
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      13 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/ko/tag/scala" title="See all posts with tag 'Scala'">Scala</a>
+    
+  </div>
+</div>
+          </header>
+
+          <div class="article-content">
+            <h2 id="tl-dr">TL; DR</h2>
+
+<p>스칼라 클래스를 프로그래밍하기 어려우시다면 다음 순서대로 디자인하세요.</p>
+
+<ol>
+  <li>데이터를 선언하고 구현하세요</li>
+  <li>프로그램이 요구하는 연산을 나열하고, 기본 연산과 기본 연산에서 유도된 연산을 구분하세요</li>
+  <li>연산 호출의 단순화를 위한 편의성 문법을 추가하세요</li>
+</ol>
+
+<h2 id="스칼라-클래스-어디서부터-어떻게-디자인해야-할까요">스칼라 클래스, 어디서부터 어떻게 디자인해야 할까요?</h2>
+
+<p><a href="https://www.scala-lang.org/">스칼라</a>의 문법을 공부한 뒤 처음 실용적인 프로그램을 만드려고 하면, 어디서부터 시작해야 할 지 막막합니다. 언제 <code class="highlighter-rouge">trait</code>을 써야 하고, 언제 <code class="highlighter-rouge">class</code>와 <code class="highlighter-rouge">abstract class</code>를 사용해야 할까요? 언제 <code class="highlighter-rouge">object</code>를 사용해야 할까요? 메소드는 어떤 식으로 정의해야 할까요? 어떻게 클래스를 디자인하고 언제 상위 클래스를 상속해야 할까요? <a href="https://en.wikipedia.org/wiki/Composition_over_inheritance">상속 대신 구성하라</a>는 원칙이 스칼라에서 어떻게 받아들여질까요?</p>
+
+<p>스칼라는 <a href="https://medium.com/@jooyunghan/%ED%95%A8%EC%88%98%ED%98%95-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EC%9D%B4%EB%9E%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80-fab4e960d263">함수형 프로그래밍 언어</a>이기도 하고, Java와의 호환성을 위해 객체 지향 프로그래밍 언어이기도 합니다. 스칼라는 서로 다른 두 가지 패러다임을 지원하기 위해, 언어가 지원하는 자유도가 굉장히 높은 편입니다. 하지만, 처음 스칼라로 프로그래밍을 하는 입장에서는 수많은 선택권이 오히려 혼란을 가져오기도 합니다. 이 포스팅에서는 함수형 언어로서 스칼라를 사용하기 위해, 스칼라의 클래스를 작성할 때 일반적으로 사용할 수 있는 형식을 제시하려고 합니다. 이 형식은 스칼라의 클래스를 좀 더 체계적으로 다룰 수 있으므로, 가독성을 높이고 보다 확장 가능한 프로그램을 작성할 수 있도록 돕습니다.</p>
+
+<h2 id="fizzbuzz-테스트">FizzBuzz 테스트</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Fizz_buzz">FizzBuzz 테스트</a>는 프로그래머의 채용 문제로 널리 알려져 있습니다. 이를 간략히 요약하면 다음과 같습니다.</p>
+
+<blockquote>
+  <p>1부터 100까지의 숫자를 출력하라. 단, 3의 배수들은 “Fizz”, 5의 배수들은 “Buzz”, 3과 5의 배수들은 “FizzBuzz”라는 문자열로 치환하라.</p>
+</blockquote>
+
+<p>FizzBuzz 테스트를 1분 안에 풀기 위한 가장 단순한 해법은 다음과 같습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">input</span> <span class="k">=</span> <span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">100</span><span class="o">).</span><span class="py">toList</span>
+<span class="k">val</span> <span class="nv">output</span> <span class="k">=</span> <span class="nv">input</span><span class="o">.</span><span class="py">map</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">15</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="s">"FizzBuzz"</span>
+  <span class="k">case</span> <span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="s">"Fizz"</span>
+  <span class="k">case</span> <span class="n">i</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="s">"Buzz"</span>
+  <span class="k">case</span> <span class="n">i</span> <span class="k">=&gt;</span> <span class="nv">i</span><span class="o">.</span><span class="py">toString</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>하지만, 만약 이 해법이 실제로 상용 프로그램에 사용되는 코드 조각이라면, 여기서 끝내서는 곤란합니다.  이 단순한 해법을 리팩토링함으로써, 스칼라 클래스를 작성할 때 일반적으로 사용할 수 있는 형식에 대해 소개하겠습니다.</p>
+
+<h2 id="fizzbuzz-테스트-자세히-들여다보기">FizzBuzz 테스트 자세히 들여다보기</h2>
+
+<p>FizzBuzz 테스트를 메시지(문자메시지라고 생각해도 좋고, 네트워크 메시지라고 생각해도 좋습니다)를 다루는 문제로 생각합시다. 그러면, FizzBuzz 테스트는 모든 미가공된 데이터(raw data)에 대해 다음과 같은 연산 과정을 수행하는 것으로 바라볼 수 있습니다.</p>
+
+<ol>
+  <li> 미가공된 데이터(여기서는 숫자)를 숫자를 포함하는 메시지로 변환 </li>
+  <li> 숫자를 포함하는 메시지에 대해 다음을 수행 </li>
+  <li style="list-style-type:none">
+  <ul style="margin-bottom:0">
+    <li> 만약 메시지의 숫자가 3과 5의 배수라면, "FizzBuzz"를 포함한 메시지로 변환 </li>
+    <li> 위의 조건에 해당되지 않으면서, 만약 메시지의 숫자가 3의 배수라면, "Fizz"를 포함한 메시지로 변환 </li>
+    <li> 위의 조건에 해당되지 않으면서, 만약 메시지의 숫자가 5의 배수라면, "Buzz"를 포함한 메시지로 변환 </li>
+    <li> 위의 어떤 조건에도 해당되지 않으면, 메시지를 그대로 유지 </li>
+  </ul>
+  </li>
+  <li> 메시지를 문자열로 변환 </li>
+</ol>
+
+<p>정리하면, 우리는 숫자와 문자열을 포함하는 메시지 클래스(<code class="highlighter-rouge">Msg</code>라고 부릅시다)를 구현해야 하고, 이 메시지 클래스에 대해 다음의 다섯 가지 기능을 구현해야 합니다.</p>
+
+<ul>
+  <li>미가공 데이터를 메시지로 변환하는 기능</li>
+  <li>미가공 데이터의 조건을 검증하는 기능</li>
+  <li>조건에 해당되지 않으면, 다음 조건의 검증으로 넘어가는 기능</li>
+  <li>미가공 데이터의 내용을 변환하는 기능</li>
+  <li>메시지를 문자열로 변환하는 기능</li>
+</ul>
+
+<p>여기에 더해, 미가공 데이터를 포함하지 않는 메시지(<code class="highlighter-rouge">EmptyMsg</code>)를 구현하기로 합시다. <code class="highlighter-rouge">EmptyMsg</code>는 위의 연산 과정에 직접적으로 드러나지는 않았습니다. 하지만, 미가공 데이터를 메시지로 변환할 때 실패하는 등, 메시지를 다루는 과정에서 연산이 실패한 경우 어떤 결과를 내놓아야 할 지 생각하면, 이미 위의 전체 과정이 <code class="highlighter-rouge">EmptyMsg</code>를 구현해야 한다는 것을 암시하고 있습니다.</p>
+
+<p><a href="/assets/documentation/formalization/fizzbuzz-ko-1d92052067777f2a91c8eaed04f27bd0ebd09eb5628c20b52af480422ad30de3.png">
+  <img src="/assets/documentation/formalization/fizzbuzz-ko-1d92052067777f2a91c8eaed04f27bd0ebd09eb5628c20b52af480422ad30de3.png" alt="fizzbuzz-ko.png" class="zooming" data-rjs="/assets/documentation/formalization/fizzbuzz-ko-1d92052067777f2a91c8eaed04f27bd0ebd09eb5628c20b52af480422ad30de3.png" data-zooming-width="1888" data-zooming-height="1182" />
+</a></p>
+
+<p>위 그림은 앞서 언급한 여러 종류의 <code class="highlighter-rouge">Msg</code>를 벤 다이어그램으로 표기한 것입니다. 우선, 숫자를 포함하는 메시지(<span style="color:#006400;">초록색 원과 숫자</span>)은 4가지 카테고리로 분류할 수 있습니다. 이는 각각 3의 배수, 5의 배수, 3과 5의 배수, 그 이외의 것입니다. FizzBuzz 테스트는 앞선 3개의 카테고리를 각각 “Fizz”, “Buzz”, “FizzBuzz”가 포함된 문자열 메시지(<span style="color:#00008B;">파란색 원과 문자열</span>)로 변환(<span style="color:#DC143C;">빨간색 화살표</span>)하기를 요구합니다. 한편, <code class="highlighter-rouge">EMptyMsg</code>도 <code class="highlighter-rouge">Msg</code>의 한 종류이므로 <code class="highlighter-rouge">Msg</code>의 하위 카테고리로 정의되어야 합니다.</p>
+
+<h2 id="데이터와-생성자">데이터와 생성자</h2>
+
+<p>FizzBuzz 테스트에서 다루는 데이터인 숫자와 문자열을 포함하는 <code class="highlighter-rouge">Msg</code>와 아무것도 포함하지 않는 <code class="highlighter-rouge">EmptyMsg</code>를 구현해 보겠습니다. 이것은 프로그래밍에서 <em>자료 구조</em>에 대응됩니다. 즉, 이 섹션에서 소개하는 형식은 메모리나 디스크에 유지하기 위한 데이터에 일반적으로 적용할 수 있습니다. 또, 수학에서 숫자, 삼격형, 행렬과 같은 <a href="https://en.wikipedia.org/wiki/Mathematical_object"><em>수학적 대상</em></a>을 구현하는데 적용할 수 있습니다.</p>
+
+<p>숫자와 문자열을 포함하는 <code class="highlighter-rouge">Msg</code>를 구현하기 위해, 임의의 타입 <code class="highlighter-rouge">A</code>를 포함하는 <code class="highlighter-rouge">Msg[A]</code>를 <a href="https://docs.scala-lang.org/tour/generic-classes.html">제네릭 클래스</a>를 이용해 선언하겠습니다. 그러면 <code class="highlighter-rouge">Msg</code>는 숫자와 문자열은 물론, 임의의 타입의 미가공 데이터를 포함할 수 있습니다. 그리고 <code class="highlighter-rouge">Msg</code>를 <code class="highlighter-rouge">A</code>에 대해 공변(Covariant)하도록 하겠습니다. 이 뜻은, 임의의 <code class="highlighter-rouge">T</code>의 하위 타입(subtype) <code class="highlighter-rouge">U</code>가 존재한다면, <code class="highlighter-rouge">Msg[U]</code> 또한 <code class="highlighter-rouge">Msg[T]</code>의 하위 타입이라는 뜻입니다. 이를 이용해, 모든 타입에 대한 하위 타입인 <a href="https://www.scala-lang.org/api/current/scala/Nothing.html"><code class="highlighter-rouge">Nothing</code></a>을 이용해 <code class="highlighter-rouge">EmptyMsg</code>를 선언하겠습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Msg</span><span class="o">[</span><span class="kt">+A</span><span class="o">]</span>
+
+<span class="nc">trait</span> <span class="nc">EmptyMsg</span> <span class="k">extends</span> <span class="nc">Msg</span><span class="o">[</span><span class="kt">Nothing</span><span class="o">]</span>
+</code></pre></div></div>
+
+<p>이제 <code class="highlighter-rouge">EmptyMsg</code>는 모든 타입 <code class="highlighter-rouge">A</code>에 대한 <code class="highlighter-rouge">Msg[A]</code>의 하위 타입입니다.</p>
+
+<p>다음으로, <code class="highlighter-rouge">Msg[A]</code>와 <code class="highlighter-rouge">EmptyMsg</code>를 생성할 수 있는 방법도 정의되어야 할 것입니다. 이를 다음과 같이 <code class="highlighter-rouge">object</code>를 이용해 정의합니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Msg</span> <span class="o">{</span>
+
+  <span class="k">private</span> <span class="k">case</span> <span class="k">class</span> <span class="nc">MsgImpl</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+
+  <span class="k">private</span> <span class="k">case</span> <span class="k">object</span> <span class="nc">EmptyMsgImpl</span> <span class="k">extends</span> <span class="nc">EmptyMsg</span>
+
+  <span class="k">def</span> <span class="nf">apply</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nc">MsgImpl</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+
+  <span class="k">def</span> <span class="nf">empty</span><span class="k">:</span> <span class="kt">EmptyMsg</span> <span class="o">=</span> <span class="nc">EmptyMsgImpl</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이제 <code class="highlighter-rouge">Msg</code>를 <code class="highlighter-rouge">Msg(2)</code>, <code class="highlighter-rouge">Msg("Fizz")</code>, <code class="highlighter-rouge">Msg.empty</code>와 같이 생성할 수 있습니다.</p>
+
+<p>여기서 <code class="highlighter-rouge">Msg</code>를 <code class="highlighter-rouge">class</code>나 <code class="highlighter-rouge">case class</code>로 선언하는 대신 <code class="highlighter-rouge">trait</code>으로 선언하고, 실제 구현인 <code class="highlighter-rouge">case class</code>는 <code class="highlighter-rouge">object Msg</code>에 숨겼습니다. 이렇게 한 이유는 <code class="highlighter-rouge">Msg</code>가 상속(<code class="highlighter-rouge">extends</code>)될 수 있다는 가능성을 열어두기 위해서입니다. 다른 말로 하면, <code class="highlighter-rouge">trait Msg</code>은 이것의 하위 타입이 존재할 수도 있다는 암시를 주고 있습니다. 실제로 <code class="highlighter-rouge">EmptyMsg</code>는 <code class="highlighter-rouge">Msg</code>의 하위 타입이기도 합니다. 더 나아가, <code class="highlighter-rouge">Msg</code>에 새로운 성질을 부여한 하위 타입을 새로 정의할 수도 있습니다. 예를 들면, timestamp가 포함된 <code class="highlighter-rouge">Msg</code>를, <code class="highlighter-rouge">Msg</code>를 상속함으로써 정의할 수 있습니다.</p>
+
+<p>이 선언을 <a href="#fizzbuzz-테스트-자세히-들여다보기">앞선 섹션</a>에서 소개한 소개한 <code class="highlighter-rouge">Msg</code>의 벤 다이어그램과 비교함으로써 상속과 카테고리의 관계에 대해서 생각해 볼 수 있습니다. <code class="highlighter-rouge">EmptyMsg</code>를 <code class="highlighter-rouge">Msg</code>를 상속해 구현한다는 것은 <code class="highlighter-rouge">EmptyMsg</code>가 <code class="highlighter-rouge">Msg</code>의 하위 카테고리, 또는 <code class="highlighter-rouge">Msg</code>의 부분집합이라는 것과 동등합니다. 여기서 소개한 형식을 따른다면, 여러 클래스의 상속관계만을 파악함으로써, 클래스가 어떤 관계에 있는지 알 수 있습니다. 따라서, 이 형식은 상속을 적극적으로 권장합니다.</p>
+
+<p>주의할 것은 <code class="highlighter-rouge">Msg</code>를 어떻게 다루는지를 <code class="highlighter-rouge">trait Msg</code>에 정의하지 않는다는 것입니다. 여기서 소개하는 형식은 <code class="highlighter-rouge">Msg</code>를 어떻게 보관할지와 어떻게 다룰지를 분리합니다.</p>
+
+<h2 id="기본-연산과-파생된-성질들">기본 연산과 파생된 성질들</h2>
+
+<p>앞서 <code class="highlighter-rouge">Msg</code> 클래스를 통해 FizzBuzz 테스트에서 다루는 미가공 데이터를 어떻게 보관할 지 정했으니, 이제 <code class="highlighter-rouge">Msg</code> 클래스를 어떻게 다룰지 선언하겠습니다. <code class="highlighter-rouge">Msg</code> 클래스가 자료 구조에 대응됐다면, 이 선언은 자료 구조를 다루는 <em>알고리즘</em>에 대응됩니다.</p>
+
+<p><a href="#fizzbuzz-테스트-자세히-들여다보기">앞선 섹션</a>에서 FizzBuzz 테스트를 위해 다음 다섯 가지 기능이 요구된다고 언급한 적 있습니다.</p>
+
+<ul>
+  <li>미가공 데이터를 메시지로 변환하는 기능</li>
+  <li>미가공 데이터의 조건을 검증하는 기능</li>
+  <li>조건에 해당되지 않으면, 다음 조건의 검증으로 넘어가는 기능</li>
+  <li>미가공 데이터의 내용을 변환하는 기능</li>
+  <li>메시지를 문자열로 변환하는 기능</li>
+</ul>
+
+<p>이 기능들을 구현하기 위해 <code class="highlighter-rouge">point</code>, <code class="highlighter-rouge">filter</code>, <code class="highlighter-rouge">orElse</code>, <code class="highlighter-rouge">map</code>, <code class="highlighter-rouge">show</code>라는 다섯 가지 연산을 도입하겠습니다.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">point</code> 연산은 임의의 타입 <code class="highlighter-rouge">A</code>의 미가공 데이터를 메시지로 변환하는 함수입니다.</li>
+  <li><code class="highlighter-rouge">filter</code> 연산은 <code class="highlighter-rouge">Msg</code>에 포함된 미가공 데이터를 주어진 조건에 대해 검증합니다. 만약 검증 결과가 <code class="highlighter-rouge">true</code>라면 <code class="highlighter-rouge">Msg</code>를 그대로 반환하고, <code class="highlighter-rouge">false</code>라면 <code class="highlighter-rouge">EmptyMsg</code>를 반환합니다.</li>
+  <li><code class="highlighter-rouge">orElse</code> 연산은 두 개의 <code class="highlighter-rouge">Msg</code>를 취합니다. 만약 첫 번째 <code class="highlighter-rouge">Msg</code>가 <code class="highlighter-rouge">EmptyMsg</code>가 아니라면, 첫 번째 <code class="highlighter-rouge">Msg</code>를 반환합니다. 만약 첫 번째 <code class="highlighter-rouge">Msg</code>가 <code class="highlighter-rouge">EmptyMsg</code>이라면, 두 번째 <code class="highlighter-rouge">Msg</code>를 반환합니다.</li>
+  <li><code class="highlighter-rouge">map</code> 연산은 <code class="highlighter-rouge">Msg</code>에 포함된 미가공 데이터를 변경합니다.</li>
+  <li><code class="highlighter-rouge">show</code> 연산은 <code class="highlighter-rouge">Msg</code>를 문자열로 변환합니다.</li>
+</ul>
+
+<p>우리는 이 다섯 가지 연산에서 다음을 관찰할 수 있습니다. 우선,  <code class="highlighter-rouge">orElse</code> 연산은 <a href="https://docs.scala-lang.org/tour/pattern-matching.html">패턴매치</a>로 정의할 수 있습니다.  두 번째로, <code class="highlighter-rouge">filter</code>와 <code class="highlighter-rouge">map</code> 연산은 <code class="highlighter-rouge">Msg</code>를 변경하는 연산이므로, 공통점이 있는 것처럼 보입니다.</p>
+
+<p><code class="highlighter-rouge">filter</code>와 <code class="highlighter-rouge">map</code>을 구현하기 위해, <code class="highlighter-rouge">flatMap</code>이라는 연산을 도입하겠습니다. <code class="highlighter-rouge">flatMap</code>은 <code class="highlighter-rouge">Msg</code>의 미가공 데이터를 다른 <code class="highlighter-rouge">Msg</code>로 변환하는 함수를 변수로 취합니다. 만약 이 함수의 연산 결과가 <code class="highlighter-rouge">EmptyMsg</code>이라면 <code class="highlighter-rouge">flatMap</code>의 결과로 <code class="highlighter-rouge">EmptyMsg</code>을 반환합니다. 만약 그렇지 않다면, 그 결과를 반환합니다.</p>
+
+<p>이제 이 연산들을 두 가지 그룹으로 구분하겠습니다. 우선, <code class="highlighter-rouge">point</code>, <code class="highlighter-rouge">flatMap</code>, <code class="highlighter-rouge">show</code>는 <em>기본 연산</em>(elementary operations)입니다. 반면, <code class="highlighter-rouge">map</code>, <code class="highlighter-rouge">filter</code>, <code class="highlighter-rouge">orElse</code>는 기본 연산으로부터 <em>유도된 연산</em>입니다. 이들은 기본 연산들의 조합으로 표현할 수 있거나, <code class="highlighter-rouge">Msg</code>의 선언으로부터 자연히 정의될 수 있습니다.</p>
+
+<p>이 연산들을 다음과 같이 선언하겠습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">MsgOps</span> <span class="k">extends</span> <span class="nc">MsgLaws</span> <span class="o">{</span>
+
+  <span class="k">def</span> <span class="nf">point</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span>
+
+  <span class="k">def</span> <span class="nf">flatMap</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">msg</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span>
+
+  <span class="k">def</span> <span class="nf">show</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">msg</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">String</span>
+
+<span class="o">}</span>
+
+<span class="k">trait</span> <span class="nc">MsgLaws</span> <span class="o">{</span> <span class="n">self</span><span class="k">:</span> <span class="kt">MsgOps</span> <span class="o">=&gt;</span>
+
+  <span class="k">def</span> <span class="nf">map</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">msg</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nf">flatMap</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">point</span><span class="o">(</span><span class="nf">f</span><span class="o">(</span><span class="n">a</span><span class="o">)))</span>
+
+  <span class="k">def</span> <span class="nf">filter</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">msg</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Boolean</span><span class="o">)</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nf">flatMap</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="o">(</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">if</span><span class="o">(</span><span class="nf">f</span><span class="o">(</span><span class="n">a</span><span class="o">))</span> <span class="n">msg</span> <span class="k">else</span> <span class="nv">Msg</span><span class="o">.</span><span class="py">empty</span><span class="o">)</span>
+
+  <span class="k">def</span> <span class="nf">isEmpty</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">msg</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span>
+    <span class="n">msg</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="k">_:</span> <span class="kt">EmptyMsg</span> <span class="o">=&gt;</span> <span class="kc">true</span>
+      <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="kc">false</span>
+    <span class="o">}</span>
+
+  <span class="k">def</span> <span class="nf">orElse</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span> <span class="k">&gt;:</span> <span class="kt">A</span><span class="o">](</span><span class="n">msg1</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">msg2</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nf">if</span><span class="o">(!</span><span class="nf">isEmpty</span><span class="o">(</span><span class="n">msg1</span><span class="o">))</span> <span class="n">msg1</span> <span class="k">else</span> <span class="n">msg2</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이 선언에서 <code class="highlighter-rouge">MsgOps</code>는 기본 연산을 선언한 <code class="highlighter-rouge">trait</code>이고, <code class="highlighter-rouge">MsgLaws</code>는 기본 연산으로부터 유도된 연산을 선언하고 구현한 <code class="highlighter-rouge">trait</code>입니다. <code class="highlighter-rouge">trait Msg</code>와 마찬가지로, 연산을 정의한 <code class="highlighter-rouge">MsgOps</code> 클래스도 상속될 수 있음을 암시하기 위해 <code class="highlighter-rouge">trait</code>으로 선언되었습니다. 위에서 보듯이, <code class="highlighter-rouge">MsgOps</code>에 선언된 세 가지 연산만을 정의하면 자연스럽게 <code class="highlighter-rouge">MsgLaws</code>도 정의될 수 있음을 표현하고 있습니다. 따라서, 하위 클래스에서 <code class="highlighter-rouge">MsgOps</code>를 상속한 뒤 기본 연산만을 정의함으로써, 기본 연산에서 유도된 다양한 성질을 사용할 수 있습니다. <code class="highlighter-rouge">Msg</code>가 수학에서 수학적 대상에 대응됐다면, <code class="highlighter-rouge">MsgOps</code>는 <a href="https://en.wikipedia.org/wiki/Axiom"><em>공리(axiom)</em></a>에, <code class="highlighter-rouge">MsgLaws</code>는 <a href="https://en.wikipedia.org/wiki/Theorem"><em>정리(theorem)</em></a>에 대응됩니다.</p>
+
+<p>여기서 <code class="highlighter-rouge">MsgOps</code>는 <code class="highlighter-rouge">MsgLaws</code>를 상속하고, <code class="highlighter-rouge">MsgLaws</code>는 <code class="highlighter-rouge">MsgOps</code>를 상속합니다. 즉, <code class="highlighter-rouge">MsgOps</code>와 <code class="highlighter-rouge">MsgLaws</code>는 같은 <code class="highlighter-rouge">trait</code>이라고 봐도 무방합니다. 별도의 <code class="highlighter-rouge">trait</code>으로 분리한 이유는 단지 기본 연산과 유도된 연산을 구분해 가독성을 높이기 위함입니다. 단, 스칼라는 서로 상속하는 구조를 금지하기 때문에, <code class="highlighter-rouge">MsgLaws</code>의 <code class="highlighter-rouge">self</code>를 <code class="highlighter-rouge">MsgOps</code>로 지정함으로써 이 문제를 해결했습니다.</p>
+
+<p>이제 <code class="highlighter-rouge">MsgOps</code>에 선언된 기본 연산을 구현해야 합니다. 이를 다음과 같이 <code class="highlighter-rouge">object Msg</code>에 <code class="highlighter-rouge">MsgOps</code>를 상속한 뒤 <code class="highlighter-rouge">object Msg</code>에서 구현하겠습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Msg</span> <span class="k">extends</span> <span class="nc">MsgOps</span> <span class="o">{</span>
+  <span class="o">...</span>
+
+  <span class="k">def</span> <span class="nf">point</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">)</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nf">apply</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+
+  <span class="k">def</span> <span class="nf">flatMap</span><span class="o">[</span><span class="kt">A</span>, <span class="kt">B</span><span class="o">](</span><span class="n">msg</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span>
+    <span class="n">msg</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="nc">MsgImpl</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nf">f</span><span class="o">(</span><span class="n">a</span><span class="o">)</span>
+      <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="n">empty</span>
+    <span class="o">}</span>
+
+  <span class="k">def</span> <span class="nf">show</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">msg</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span>
+    <span class="n">msg</span> <span class="k">match</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="nc">MsgImpl</span><span class="o">(</span><span class="n">a</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nv">a</span><span class="o">.</span><span class="py">toString</span>
+      <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">"empty"</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">MsgOps</code>를 <code class="highlighter-rouge">object Msg</code>에서 구현한 이유는 두 가지입니다. 우선, <code class="highlighter-rouge">Msg</code>의 구현인 <code class="highlighter-rouge">MsgImpl</code>를 참조할 수 있는 범위가 <code class="highlighter-rouge">private</code>에 의해서 <code class="highlighter-rouge">object Msg</code>으로 제한돼있습니다. 따라서 <code class="highlighter-rouge">MsgOps</code>를 구현할 때 <code class="highlighter-rouge">MsgImpl</code>을 사용하려면 반드시 <code class="highlighter-rouge">object Msg</code>에서 구현해야 합니다. 두 번째로, <code class="highlighter-rouge">object Msg</code>에서 <code class="highlighter-rouge">MsgOps</code>를 구현하면, <code class="highlighter-rouge">MsgOps</code>의 연산을 사용할 때 <code class="highlighter-rouge">Msg</code>가 마치 네임스페이스나 패키지 이름처럼 보입니다. 즉, 연산을 <code class="highlighter-rouge">Msg.show(msg)</code>이나 <code class="highlighter-rouge">Msg.show(msg1, msg2)</code>처럼 호출할 수 있습니다.</p>
+
+<h2 id="편의를-위해-추가된-문법">편의를 위해 추가된 문법</h2>
+
+<p>앞서 <code class="highlighter-rouge">Msg</code>를 위한 연산 <code class="highlighter-rouge">MsgOps</code>를 <code class="highlighter-rouge">object Msg</code>에 구현함으로써 필요한 연산을 모두 호출할 수 있게 됐습니다. 하지만, 연산을 변수 앞에 적는 방식은 분명하지만 장황합니다. 따라서, 예를 들어 <code class="highlighter-rouge">Msg.show(Msg.orElse(Msg.filter(msg1, _ == 0), msg2))</code>같은 긴 연산을 짧게 적을 수 있는 방법이 필요합니다.</p>
+
+<p>이를 위해 다음과 같은 <em>문법적 편의(syntactic sugar)</em>를 위한 클래스를 추가합니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">MsgSyntax</span> <span class="o">{</span>
+
+  <span class="k">implicit</span> <span class="k">class</span> <span class="nc">MsgSyntaxImpl</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">msg</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nf">flatMap</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="nv">Msg</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">f</span><span class="o">)</span>
+    <span class="k">def</span> <span class="nf">show</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="nv">Msg</span><span class="o">.</span><span class="py">show</span><span class="o">(</span><span class="n">msg</span><span class="o">)</span>
+    <span class="k">def</span> <span class="nf">map</span><span class="o">[</span><span class="kt">B</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="n">B</span><span class="o">)</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="nv">Msg</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">f</span><span class="o">)</span>
+    <span class="k">def</span> <span class="nf">filter</span><span class="o">(</span><span class="n">f</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=&gt;</span> <span class="nc">Boolean</span><span class="o">)</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="nv">Msg</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">f</span><span class="o">)</span>
+    <span class="k">def</span> <span class="nf">orElse</span><span class="o">[</span><span class="kt">B</span> <span class="k">&gt;:</span> <span class="kt">A</span><span class="o">](</span><span class="n">msg2</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">])</span><span class="k">:</span> <span class="kt">Msg</span><span class="o">[</span><span class="kt">B</span><span class="o">]</span> <span class="k">=</span> <span class="nv">Msg</span><span class="o">.</span><span class="py">orElse</span><span class="o">(</span><span class="n">msg</span><span class="o">,</span> <span class="n">msg2</span><span class="o">)</span>
+  <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이 <code class="highlighter-rouge">MsgSyntax</code>를 <code class="highlighter-rouge">object Msg</code>에 다음과 같이 추가합니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">Msg</span> <span class="k">extends</span> <span class="nc">MsgOps</span> <span class="o">{</span>
+  <span class="o">...</span>
+  <span class="k">object</span> <span class="nc">syntax</span> <span class="k">extends</span> <span class="nc">MsgSyntax</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>그러면 <code class="highlighter-rouge">import Msg.syntax._</code>를 추가하는 것으로 <code class="highlighter-rouge">Msg.show(Msg.orElse(Msg.filter(msg1, _ == 0), msg2))</code>를 <code class="highlighter-rouge">msg1.filter(_ == 0).orElse(msg2).show</code>와 같이 가독성 높고 간략하게 표현할 수 있습니다.</p>
+
+<h2 id="다시-쓰여진-fizzbuzz-테스트">다시 쓰여진 FizzBuzz 테스트</h2>
+
+<p>FizzBuzz 테스트를 풀 준비를 모두 마쳤습니다. 이제 다음과 같이 FizzBuzz 테스트를 해결할 수 있습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">Msg.syntax._</span>
+
+<span class="k">val</span> <span class="nv">cd1</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="nc">Boolean</span> <span class="k">=</span> <span class="n">i</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="k">val</span> <span class="nv">cd2</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="nc">Boolean</span> <span class="k">=</span> <span class="n">i</span> <span class="k">=&gt;</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="k">val</span> <span class="nv">cd3</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="nc">Boolean</span> <span class="k">=</span> <span class="n">i</span> <span class="k">=&gt;</span> <span class="nf">cd1</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="nf">cd2</span><span class="o">(</span><span class="n">i</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="nv">tf1</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="nc">String</span> <span class="k">=</span> <span class="n">i</span> <span class="k">=&gt;</span> <span class="s">"Fizz"</span>
+<span class="k">val</span> <span class="nv">tf2</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="nc">String</span> <span class="k">=</span> <span class="n">i</span> <span class="k">=&gt;</span> <span class="s">"Buzz"</span>
+<span class="k">val</span> <span class="nv">tf3</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="nc">String</span> <span class="k">=</span> <span class="n">i</span> <span class="k">=&gt;</span> <span class="s">"FizzBuzz"</span>
+
+<span class="k">val</span> <span class="nv">inputs</span> <span class="k">=</span> <span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">100</span><span class="o">).</span><span class="py">toList</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">raw</span> <span class="k">=&gt;</span> <span class="nc">Msg</span><span class="o">(</span><span class="n">raw</span><span class="o">))</span>
+<span class="k">val</span> <span class="nv">outputs</span> <span class="k">=</span> <span class="n">inputs</span>
+  <span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span>
+    <span class="nv">i</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="n">cd3</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">tf3</span><span class="o">)</span> <span class="n">orElse</span>
+      <span class="nv">i</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="n">cd1</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">tf1</span><span class="o">)</span> <span class="n">orElse</span>
+      <span class="nv">i</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="n">cd2</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">tf2</span><span class="o">)</span> <span class="n">orElse</span> <span class="n">i</span><span class="o">)</span>
+  <span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">msg</span> <span class="k">=&gt;</span> <span class="nv">msg</span><span class="o">.</span><span class="py">show</span><span class="o">)</span>
+
+<span class="nf">println</span><span class="o">(</span><span class="nv">outputs</span><span class="o">.</span><span class="py">mkString</span><span class="o">(</span><span class="s">", "</span><span class="o">))</span>
+</code></pre></div></div>
+
+<p>이 해법은 <a href="#fizzbuzz-테스트">1분만에 푼 해법</a>에 비해 가독성이 높고, 재조합하기 쉽고, 테스트하기 쉽고, 새로운 요구조건이 추가되더라도 유연하게 대처할 수 있습니다. 예를 들어, 다음 조건이 추가된다면 어떨까요?</p>
+
+<ul>
+  <li>문자열 앞에 숫자를 추가하기 (예. “(15) FizzBuzz”)</li>
+  <li>입력된 숫자를 제곱한 뒤, 문자열로 변환하기</li>
+  <li>앞 숫자와의 곱을 문자열로 변환하기</li>
+  <li>입력으로 들어온 여러 종류의 숫자 중 정수만을 선별해 문자열로 변환하고 나머지는 무시하기</li>
+</ul>
+
+<p>이 문제들 중 일부는 <code class="highlighter-rouge">MsgLaws</code>에 새로운 연산을 추가해야 하지만, 기본 연산이 정의된 <code class="highlighter-rouge">MsgOps</code>에 새로운 연산을 추가할 필요는 없습니다. 결국 앞서 정의된 기본 연산을 조합하는 것만으로 이 문제들을 해결할 수 있습니다. 즉, <strong>단 세 개의 연산을 조합하는 것만으로 다양한 연산을 유도함으로써, 고려할 수 있는 수많은 문제들을 이 연산의 조합만으로 해결할 수 있게 되었습니다.</strong></p>
+
+<h2 id="스칼라-클래스-형식의-요약">스칼라 클래스 형식의 요약</h2>
+
+<p>우리는 먼저 <code class="highlighter-rouge">Data</code>를 정의하고, <code class="highlighter-rouge">Data</code>를 다룰 수 있는 방법인 기본 연산 <code class="highlighter-rouge">Ops</code>와 유도된 연산 <code class="highlighter-rouge">Laws</code>를 정의했습니다. 그리고 편의를 위해 <code class="highlighter-rouge">Syntax</code>를 정의해 가독성을 높였습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">Data</span>
+
+<span class="k">trait</span> <span class="nc">Ops</span> <span class="k">extends</span> <span class="nc">Laws</span> <span class="o">{</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="k">trait</span> <span class="nc">Laws</span> <span class="o">{</span> <span class="n">self</span><span class="k">:</span> <span class="kt">Ops</span> <span class="o">=&gt;</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="k">trait</span> <span class="nc">Syntax</span> <span class="o">{</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="k">object</span> <span class="nc">Data</span> <span class="k">extends</span> <span class="nc">Ops</span> <span class="o">{</span>
+  <span class="o">...</span>
+  <span class="k">object</span> <span class="nc">syntax</span> <span class="k">extends</span> <span class="nc">Syntax</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이 형식은 함수형으로 데이터를 다루는 수많은 문제에 일반적으로 적용될 수 있는 방법론입니다.</p>
+
+<p>잘 짜여진 함수형 프로그램이 무엇일까요? 저는 이 형식의 관점에서, 프로그램이 요구하는 모든 연산의 기본 연산을 가능한 적은 갯수로 간결하게 정의하는 것이라고 보고 싶습니다.</p>
+
+<p>이 포스팅에서 서술한 FizzBuzz 테스트의 전체 코드는 <a href="https://gist.github.com/xxxnell/34ec92b5ab216ca6d8d95d0ca81970a3">gist</a>에서 조회하실 수 있습니다. 또, <a href="https://scastie.scala-lang.org/Qf8WlNGwT7aAJm2ObEnEBw">Scastie</a>을 이용해 코드를 실행하거나 여러 가지로 변경해보실 수도 있습니다.</p>
+
+<p>이 글을 재미있게 읽으셨다면, 이 포스팅에서 소개된 형식으로 작성된 통계 라이브러리인 <a href="https://github.com/xxxnell/flip">Flip</a>을 방문해 별을 눌러주세요!</p>
+
+<div align="center" style="margin-bottom:25px">
+<!-- Place this tag where you want the button to render. -->
+<a class="github-button" href="https://github.com/xxxnell/flip" data-icon="octicon-star" data-size="large" aria-label="Star xxxnell/flip on GitHub">Star</a>
+</div>
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+
+<h2 id="더-읽을거리">더 읽을거리</h2>
+
+<p>빠르고 가벼운 통계 및 확률 라이브러리인 <a href="https://github.com/xxxnell/flip">Flip</a>의 대부분의 클래스가 이 포스팅에서 소개한 형식으로 작성되었습니다. 이 형식이 실용적으로 어떻게 적용되는지를 보고싶으시면 Flip 라이브러리의 확률 분포를 구현한 부분을 참고하세요.</p>
+
+<ul>
+  <li><a href="https://github.com/xxxnell/flip/blob/master/flip-core/src/main/scala/flip/pdf/Dist.scala">A probability distrubiton class of Flip</a></li>
+</ul>
+
+<p>simulacrum은 이 포스팅에서 성취하고자 하는 목적과 비슷한 목적을 가진 라이브러리입니다.</p>
+
+<ul>
+  <li><a href="https://github.com/mpilquist/simulacrum">simulacrum</a></li>
+</ul>
+
+<p>다음 몇 가지 포스팅은 위 라이브러리와 마찬가지로 이 포스팅과 비슷한 목적의 방법론을 보여줍니다.</p>
+
+<ul>
+  <li><a href="http://typelevel.org/cats/typeclasses.html">Type classes of Cats</a></li>
+  <li><a href="http://danielwestheide.com/blog/2013/02/06/the-neophytes-guide-to-scala-part-12-type-classes.html">The Neophyte’s Guide to Scala: Type Classes</a></li>
+  <li><a href="https://blog.scalac.io/2017/04/19/typeclasses-in-scala.html">Type classes in Scala</a></li>
+</ul>
+
+<p>다음 포스팅은 위에서 서술한 여러 방법론이 공통적으로 겪는 문제를 보여줍니다. 이 포스팅에서 소개한 형식은 아래에서 제시한 문제를 피해갈 수 있습니다.</p>
+
+<ul>
+  <li><a href="http://typelevel.org/blog/2016/09/30/subtype-typeclasses.html">Subtype type classes don’t work</a></li>
+</ul>
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=%EC%8A%A4%EC%B9%BC%EB%9D%BC+%ED%81%B4%EB%9E%98%EC%8A%A4%EC%9D%98+%EC%9D%BC%EB%B0%98%EC%A0%81%EC%9D%B8+%ED%259...%20-%20https://blog.xxxnell.com/posts/formalization%20by%20@xxxnell" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://blog.xxxnell.com/posts/formalization" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+          </div>
+
+          
+
+        </article>
+        <footer class="footer scrollappear">
+  <!--
+  <p>
+    About <a href="/ko/about" title="About me">Nell</a>.
+  </p>
+  -->
+
+  <div class="lang-sels">
+    
+      
+      <div class="lang-sel" onclick="location.href='/posts/formalization';" >en</div>
+      <div class="lang-div">|</div>
+    
+      
+      <div class="lang-sel" onclick="location.href='/ko/posts/formalization';" style="font-weight: bold;">ko</div>
+      <div class="lang-div">|</div>
+    
+  </div>
+
+</footer>
+
+      </div>
+    </div>
+  </main>
+  <!-- MathJax -->
+<!-- <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script> -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<!-- utterances https://utteranc.es/ -->
+<script src="https://utteranc.es/client.js"
+        repo="xxxnell/blog"
+        issue-number="8"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90660277-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90660277-1');
+  </script>
+
+
+<script src="/assets/vendor-0fb4b91f7ad6c193a69224eba7a01b691a2d7528ee672607575ccc0df3aea545.js" type="text/javascript"></script>
+
+
+  <script src="/assets/webfonts-96493456d319d1bf419afdf8701552d4d486fee6afd304897d4fd81eb4e0cc0b.js" type="text/javascript"></script>
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-5baeaec6ae90dfe28952c8193837fef2aee35ad61bcab5287466ddd6cc5b2c31.js" type="text/javascript"></script>
+
+
+
+</body>
+</html>
