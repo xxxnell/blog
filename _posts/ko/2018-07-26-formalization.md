@@ -320,10 +320,9 @@ object Data extends Ops {
 
 * [A probability distrubiton class of Flip](https://github.com/xxxnell/flip/blob/master/flip-core/src/main/scala/flip/pdf/Dist.scala)
 
-simulacrum과 dandy는 이 포스팅에서 성취하고자 하는 목적과 비슷한 목적을 가진 라이브러리입니다.
+simulacrum은 이 포스팅에서 성취하고자 하는 목적과 비슷한 목적을 가진 라이브러리입니다.
 
 * [simulacrum](https://github.com/mpilquist/simulacrum)
-* [dandy](https://github.com/maxaf/dandy)
 
 다음 몇 가지 포스팅은 위 라이브러리와 마찬가지로 이 포스팅과 비슷한 목적의 방법론을 보여줍니다.
 
